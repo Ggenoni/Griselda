@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>La Sala di Griselda</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #ffffff;
+      --panel: #fcfcfc;
+      --muted: #666;
+      --text: #1a1a1a;
+      --line: #dddddd;
+      --soft-line: #ececec;
+      --overlay: rgba(0, 0, 0, 0.38);
+      --radius: 12px;
+      --gap: 12px;
+      --shadow: 0 10px 30px rgba(0,0,0,0.08);
+      --phone-slideshow-h: 42svh;
+      --measure: 66ch;
+      --font-ui: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --font-reading: "Source Serif 4", Georgia, serif;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      color: var(--text);
+      background: var(--bg);
+      font-family: var(--font-reading);
+      font-size: 17px;
+      line-height: 1.7;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(360px, 0.85fr);
+      height: 100svh;
+      overflow: hidden;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+      border-radius: 10px;
+    }
+
+    .left-panel,
+    .right-panel,
+    .slide,
+    .text-section { min-width: 0; }
+
+    .left-panel {
+      position: sticky;
+      top: 0;
+      height: 100svh;
+      background: #f7f7f7;
+      border-right: 1px solid var(--line);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .meta {
+      flex: 0 0 auto;
+      padding: 1rem 1.5rem 0.9rem;
+      background: rgba(255,255,255,0.95);
+      border-bottom: 1px solid var(--soft-line);
+      backdrop-filter: blur(10px);
+      position: relative;
+      z-index: 30;
+      font-family: var(--font-ui);
+    }
+
+    .meta-subtitle {
+      display: block;
+      font-size: 0.76rem;
+      line-height: 1.2;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      margin-bottom: 0.4rem;
+      text-transform: uppercase;
+    }
+
+    .meta h1 {
+      margin: 0;
+      font-size: clamp(1.2rem, 1.02rem + 0.6vw, 1.55rem);
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+    }
+
+    .slideshow-shell {
+      position: relative;
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .left-panel,
+    .slideshow-shell,
+    .slides {
+      touch-action: pan-y;
+    }
+
+    .slides {
+      height: 100%;
+      display: flex;
+      transition: transform 0.45s ease;
+      will-change: transform;
+    }
+
+    .slide {
+      flex: 0 0 100%;
+      height: 100%;
+      padding: 3.4rem 1rem 3.25rem;
+      position: relative;
+      display: grid;
+      gap: var(--gap);
+    }
+
+    .slide-title {
+      position: absolute;
+      top: 0.8rem;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-family: var(--font-ui);
+      font-size: clamp(1.05rem, 0.95rem + 0.45vw, 1.28rem);
+      font-weight: 600;
+      line-height: 1.15;
+      letter-spacing: 0.01em;
+      color: #2d2d2d;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    .img-wrapper {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      min-height: 0;
+      overflow: hidden;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      background: #e9e9e9;
+      cursor: pointer;
+    }
+
+    .img-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border: 1px solid rgba(0,0,0,0.08);
+    }
+
+    .img-number {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      z-index: 4;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 1.8rem;
+      height: 1.8rem;
+      padding: 0 0.45rem;
+      border-radius: 999px;
+      background: rgba(0,0,0,0.62);
+      color: #fff;
+      font-family: var(--font-ui);
+      font-weight: 700;
+      font-size: 0.85rem;
+      line-height: 1;
+      transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+    }
+
+    .img-number.active-number {
+      background: #f3e35e;
+      color: #111;
+      transform: scale(1.08);
+    }
+
+    .img-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      background: var(--overlay);
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+
+    .img-wrapper.active-image .img-overlay,
+    .img-wrapper.revealed-image .img-overlay {
+      opacity: 0;
+    }
+
+    .arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 40;
+      width: 2.8rem;
+      height: 2.8rem;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      border: none;
+      background: rgba(255,255,255,0.78);
+      color: #222;
+      font-family: var(--font-ui);
+      font-size: 1.8rem;
+      line-height: 1;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      transition: background 0.2s ease, opacity 0.2s ease;
+    }
+
+    .arrow:hover { background: rgba(255,255,255,0.95); }
+    .arrow-left { left: 0.75rem; }
+    .arrow-right { right: 0.75rem; }
+
+    .slideshow-dots {
+      position: absolute;
+      left: 50%;
+      bottom: 0.9rem;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      z-index: 20;
+      padding: 0.4rem 0.65rem;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.76);
+      backdrop-filter: blur(10px);
+    }
+
+    .slideshow-dot {
+      width: 0.62rem;
+      height: 0.62rem;
+      border-radius: 999px;
+      background: #bdbdbd;
+      cursor: pointer;
+      transition: transform 0.2s ease, background 0.2s ease;
+      border: none;
+      padding: 0;
+    }
+
+    .slideshow-dot.active {
+      background: #1d1d1d;
+      transform: scale(1.15);
+    }
+
+    .right-panel {
+      height: 100svh;
+      overflow-y: auto;
+      padding: clamp(1.5rem, 1.1rem + 1vw, 2.4rem) clamp(1.4rem, 0.9rem + 1.5vw, 2.8rem) 28vh;
+      background: var(--panel);
+      overscroll-behavior-y: contain;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-gutter: stable both-edges;
+    }
+
+    .text-flow {
+      max-width: var(--measure);
+      margin: 0 auto;
+    }
+
+    .text-section {
+      margin: 0 0 1.6rem;
+      padding: 1.25rem 0 0.95rem;
+      border-top: 1px solid var(--soft-line);
+      scroll-margin-top: 1rem;
+      transition: border-color 0.2s ease;
+    }
+
+    .text-section:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .text-section.is-active {
+      border-top-color: #d8c94f;
+    }
+
+    .text-section.is-active .icon-number {
+      color: #111;
+      font-weight: 700;
+    }
+
+    .text-section h2,
+    .text-section h4 {
+      margin: 0 0 0.85rem;
+      font-family: var(--font-ui);
+      font-size: clamp(1.08rem, 0.98rem + 0.35vw, 1.26rem);
+      font-weight: 600;
+      line-height: 1.25;
+      letter-spacing: -0.01em;
+    }
+
+    .text-section p {
+      margin: 0.8rem 0 0;
+      font-size: clamp(1.03rem, 0.98rem + 0.16vw, 1.11rem);
+      line-height: 1.8;
+      letter-spacing: 0.003em;
+      text-wrap: pretty;
+      hyphens: auto;
+    }
+
+    .image-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      margin-bottom: 0.7rem;
+      font-family: var(--font-ui);
+    }
+
+    .icon-number {
+      font-family: var(--font-ui);
+      font-size: 0.92rem;
+      font-weight: 600;
+      line-height: 1;
+      color: var(--muted);
+    }
+
+    .page-end-spacer {
+      height: 36vh;
+    }
+
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: rgba(0,0,0,0.9);
+      padding: 1.5rem;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    .lightbox-img-wrapper {
+      position: relative;
+      display: inline-block;
+      overflow: hidden;
+      max-width: min(92vw, 1200px);
+      max-height: 74vh;
+      border: 2px solid rgba(255,255,255,0.8);
+      border-radius: 10px;
+      cursor: zoom-in;
+      transform: translateZ(0);
+    }
+
+    .lightbox-img {
+      display: block;
+      max-width: 100%;
+      max-height: 74vh;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      transition: transform 0.25s ease;
+      transform-origin: center center;
+      pointer-events: none;
+    }
+
+    .lightbox-img-wrapper.zoomed { cursor: zoom-out; }
+    .lightbox-img-wrapper.zoomed .lightbox-img { transform: scale(2.25); }
+
+    .lightbox-caption {
+      max-width: min(78ch, 88vw);
+      margin-top: 1rem;
+      color: #fff;
+      text-align: center;
+      line-height: 1.6;
+      font-size: 0.98rem;
+    }
+
+    .close-lightbox {
+      position: absolute;
+      top: 0.9rem;
+      right: 1.2rem;
+      color: #fff;
+      font-size: 2.6rem;
+      line-height: 1;
+      cursor: pointer;
+      z-index: 1001;
+    }
+
+    .rotate-hint {
+      display: none;
+      margin: 0.6rem 0 0;
+      font-family: var(--font-ui);
+      font-size: 0.78rem;
+      line-height: 1.35;
+      color: var(--muted);
+    }
+
+    @media (max-width: 1200px) {
+      body {
+        grid-template-columns: minmax(0, 1fr) minmax(340px, 0.94fr);
+      }
+
+      .slide {
+        padding: 3.1rem 0.85rem 2.9rem;
+      }
+
+      .right-panel {
+        padding-inline: clamp(1.2rem, 0.8rem + 1vw, 2rem);
+      }
+    }
+
+    @media (max-width: 900px) and (orientation: portrait) {
+      body {
+        display: block;
+        height: auto;
+        overflow-x: hidden;
+        overflow-y: auto;
+      }
+
+      .left-panel {
+        position: sticky;
+        top: 0;
+        height: var(--phone-slideshow-h);
+        min-height: 270px;
+        max-height: 430px;
+        border-right: none;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .meta { padding: 0.85rem 1rem 0.8rem; }
+      .meta-subtitle { font-size: 0.69rem; }
+      .meta h1 { font-size: 1.06rem; }
+      .rotate-hint { display: block; }
+
+      .slide {
+        padding: 2.6rem 0.7rem 2.7rem;
+        gap: 0.45rem;
+      }
+
+      .slide-title {
+        top: 0.55rem;
+        font-size: 0.98rem;
+      }
+
+      .img-number {
+        top: 5px;
+        left: 5px;
+        min-width: 1.35rem;
+        height: 1.35rem;
+        font-size: 0.7rem;
+        padding: 0 0.25rem;
+      }
+
+      .arrow { display: none; }
+
+      .slideshow-dots {
+        bottom: 0.55rem;
+        gap: 0.42rem;
+        padding: 0.32rem 0.55rem;
+      }
+
+      .slideshow-dot {
+        width: 0.56rem;
+        height: 0.56rem;
+      }
+
+      .right-panel {
+        height: auto;
+        overflow: visible;
+        padding: 1.15rem 1rem 42vh;
+      }
+
+      .text-flow { max-width: 100%; }
+
+      .text-section {
+        margin-bottom: 1.5rem;
+        padding-top: 1.1rem;
+        padding-bottom: 0.85rem;
+        scroll-margin-top: calc(var(--phone-slideshow-h) + 1rem);
+      }
+
+      .text-section p {
+        font-size: 1rem;
+        line-height: 1.75;
+      }
+
+      .icon-number { font-size: 0.86rem; }
+      .page-end-spacer { height: 45vh; }
+
+      .lightbox { padding: 1rem; }
+      .lightbox-img-wrapper {
+        max-width: 96vw;
+        max-height: 68vh;
+      }
+      .lightbox-img { max-height: 68vh; }
+      .lightbox-caption { font-size: 0.92rem; }
+    }
+
+    @media (max-width: 900px) and (orientation: landscape) {
+      body {
+        display: grid;
+        grid-template-columns: minmax(0, 1.02fr) minmax(300px, 0.98fr);
+        height: 100svh;
+        overflow: hidden;
+      }
+
+      .left-panel {
+        position: sticky;
+        top: 0;
+        height: 100svh;
+        border-right: 1px solid var(--line);
+        border-bottom: none;
+      }
+
+      .meta {
+        padding: 0.8rem 1rem 0.75rem;
+      }
+
+      .meta-subtitle { font-size: 0.68rem; }
+      .meta h1 { font-size: 1rem; }
+
+      .slide {
+        padding: 2.75rem 0.7rem 2.65rem;
+        gap: 0.45rem;
+      }
+
+      .slide-title {
+        top: 0.58rem;
+        font-size: 0.98rem;
+      }
+
+      .img-number {
+        min-width: 1.45rem;
+        height: 1.45rem;
+        font-size: 0.72rem;
+      }
+
+      .arrow {
+        width: 2.3rem;
+        height: 2.3rem;
+        font-size: 1.5rem;
+      }
+
+      .arrow-left { left: 0.45rem; }
+      .arrow-right { right: 0.45rem; }
+
+      .slideshow-dots {
+        bottom: 0.55rem;
+        gap: 0.38rem;
+        padding: 0.28rem 0.48rem;
+      }
+
+      .slideshow-dot {
+        width: 0.5rem;
+        height: 0.5rem;
+      }
+
+      .right-panel {
+        height: 100svh;
+        overflow-y: auto;
+        padding: 1rem 1rem 24vh;
+      }
+
+      .text-flow { max-width: 60ch; }
+
+      .text-section {
+        margin-bottom: 1.25rem;
+        padding-top: 1rem;
+        padding-bottom: 0.8rem;
+      }
+
+      .text-section p {
+        font-size: 0.99rem;
+        line-height: 1.68;
+      }
+
+      .page-end-spacer { height: 28vh; }
+    }
+  </style>
+</head>
+<body>
+  <aside class="left-panel">
+    <div class="meta">
+      <span class="meta-subtitle">CASTELLO SFORZESCO, MILANO</span>
+      <h1>La Sala di Griselda</h1>
+      <p class="rotate-hint">Su telefono, l’orientamento orizzontale rende più chiaro il rapporto tra immagini e testo.</p>
+    </div>
+
+    <div class="slideshow-shell">
+      <button class="arrow arrow-left" id="prevArrow" aria-label="Slide precedente">&#10094;</button>
+      <button class="arrow arrow-right" id="nextArrow" aria-label="Slide successiva">&#10095;</button>
+
+      <div class="slides" id="slides">
+        <div class="slide" data-wall="1" style="grid-template-columns: repeat(3,1fr); grid-template-rows: repeat(2,1fr);">
+          <div class="slide-title">Parete I</div>
+
+          <div class="img-wrapper">
+            <span class="img-number">11</span>
+            <img src="https://cdn.prod.website-files.com/68154893f0097f15b764dc20/68169975cfb70153ec92d0d9_Pinacoteca_del_Castello_Sforzesco_1347.11.jpg" data-target="text-11" data-caption="Gualtieri, Griselda e alcuni cortigiani si intrattengono con dei giochi da tavolo, tra cui le carte ed il backgammon." alt="Opera 11" />
+            <div class="img-overlay"></div>
+          </div>
+
+          <div class="img-wrapper">
+            <span class="img-number">1</span>
+            <img src="https://cdn.prod.website-files.com/68154893f0097f15b764dc20/68169831d11930a2cac2ba36_Pinacoteca_del_Castello_Sforzesco_1347.01.jpg" data-target="text-1" data-caption="Una delegazione di sudditi ottiene udienza dal marchese Gualtieri di Saluzzo e lo supplica di prendere moglie." alt="Opera 1" />
+            <div class="img-overlay"></div>
+          </div>
+
+          <div class="img-wrapper">
+            <span class="img-number">2</span>
+            <img src="https://cdn.prod.website-files.com/68154893f0097f15b764dc20/68169956cef286fbcebf0e1f_Pinacoteca_del_Castello_Sforzesco_1347.02.jpg" data-target="text-2" data-caption="Gualtieri convoca Giannucole a corte per informarlo che intende sposare sua figlia." alt="Opera 2" />
+            <div class="img-overlay"></div>
+          </div>
+
+          <div class="img-wrapper">
+            <span class="img-number">24</span>
+            <img src="https://cdn.prod.website-files.com/68154893f0097f15b764dc20/6816996e5595550135306d24_Pinacoteca_del_Castello_Sforzesco_1347.23.jpg" data-target="text-24" data-caption="La figlia di Gualtieri e Griselda viene promessa in sposa ad un giovane nobiluomo." alt="Opera 24" />
+            <div class="img-overlay"></div>
+          </div>
+
+          <div style="display:grid; grid-template-columns: repeat(3,1fr); grid-template-rows: repeat(2,1fr); gap:var(--gap); min-width:0; min-height:0;">
+            <div class="img-wrapper" style="grid-row:1 / span 2; grid-column:1;">
+              <span class="img-number">23</span>
+              <img src="https://cdn.prod.website-files.com/68154893f0097f15b764dc20/6816996e936df625258e5efc_Pinacoteca_del_Castello_Sforzesco_1347.24.jpg" data-target="text-23" data-caption="Il conte di Panago si congeda da Griselda e dalla sua famiglia." alt="Opera 23" />
+              <div class="img-overlay"></div>
+            </div>
+
+            <div class="img-wrapper" style="grid-row:1; grid-column:2;">
+              <span class="img-number">12</span>
+              <img src="https://cdn.prod.website-files.com/68154893f0097f15b764dc20/68169974936df625258e6156_Pinacoteca_del_Castello_Sforzesco_1347.12.jpg" data-target="text-12" data-caption="Griselda dà alla luce una bambina, assistita da Gualtieri e da una fantesca." alt="Opera 12" />
+              <div class="img-overlay"></div>
+            </div>
+
+            <div class="img-wrapper" style="grid-row:1 / span 2; grid-column:3;">
+              <span class="img-number">13</span>
+              <img src="https://cdn.prod.website-files.com/68154893f0097f15b764dc20/681699752b10b43b94e2f09e_Pinacoteca_del_Castello_Sforzesco_1347.13.jpg" data-target="text-13" data-caption="Gualtieri ordina al suo famiglio di portare via la bambina, facendo in modo che Griselda ascolti il dialogo." alt="Opera 13" />
+              <div class="img-overlay"></div>
+            </div>
+          </div>
+
+          <div class="img-wrapper">
+            <span class="img-number">14</span>
+            <img src="https://cdn.prod.website-files.com/68154893f0097f15b764dc20/68169975212928bd854f6db2_Pinacoteca_del_Castello_Sforzesco_1347.14.jpg" data-target="text-14" data-caption="Griselda bacia la figlia prima di separarsene e consegnarla al famiglio; Gualtieri ordina ai suoi servitori di portare la bambina dai conti di Panago." alt="Opera 14" />
+            <div class="img-overlay"></div>
+          </div>
+        </div>
+
+        <div class="slide" data-wall="2" style="grid-template-columns: repeat(3,1fr); grid-template-rows: repeat(2,1fr);">
+          <div class="slide-title">Parete II</div>
+
+          <div class="img-wrapper">
+            <span class="img-number">3</span>
+            <img src="https://cdn.prod.website-files.com/68154893f0097f15b764dc20/6816996fea635a73120adfaf_Pinacoteca_del_Castello_Sforzesco_1347.03.jpg" data-target="text-3" data-caption="Gualtieri ordina ad un sarto di confezionare una nuova veste per la sua futura sposa." alt="Opera 3" />
+            <div class="img-overlay"></div>
+          </div>
+
+          <div></div>
+
+          <div class="img-wrapper">
+            <span class="img-number">4</span>
+            <img src="https://cdn.prod.website-files.com/68154893f0097f15b764dc20/6816996f7ee8c804a2b17945_Pinacoteca_del_Castello_Sforzesco_1347.04.jpg" data-target="text-4" data-caption="Gualtieri si reca da Griselda accompagnato da un corteo a cavallo." alt="Opera 4" />
+            <div class="img-overlay"></div>
+          </div>
+
+          <div class="img-wrapper">
+            <span class="img-number">15</span>
+            <img src="https://cdn.prod.website-files.com/68154893f0097f15b764dc20/68169977d11930a2cac35c74_Pinacoteca_del_Castello_Sforzesco_1347.15.jpg" data-target="text-15" data-caption="Griselda dà alla luce un figlio maschio, assistita da tre donne; all'esterno, Gualtieri è impegnato in una partita ad un gioco da tavolo con un cortigiano." alt="Opera 15" />
+            <div class="img-overlay"></div>
+          </div>
+
+          <div></div>
+
+          <div class="img-wrapper">
+            <span class="img-number">16</span>
+            <img src="https://cdn.prod.website-files.com/68154893f0097f15b764dc20/68169977ce49b69b94cae8da_Pinacoteca_del_Castello_Sforzesco_1347.16.jpg" data-target="text-16" data-caption="Griselda consegna suo figlio al famiglio inviato dal marito; Gualtieri ordina che il bambino sia mandato presso i conti di Panago." alt="Opera 16" />
+            <div class="img-overlay"></div>
+          </div>
+        </div>
+
+        <div class="slide" data-wall="3" style="grid-template-columns: repeat(3,1fr); grid-template-rows: repeat(2,1fr);">
+          <div class="slide-title">Parete III</div>
+
+          <div class="img-wrapper">
+            <span class="img-number">5</span>
+            <img src="https://cdn.prod.website-files.com/68154893f0097f15b764dc20/6816996f032cc8cd98b888e6_Pinacoteca_del_Castello_Sforzesco_1347.05.jpg" data-target="text-5" data-caption="Gualtieri incontra Griselda di ritorno dalla fonte dell'acqua e le chiede di indicargli la casa di Giannucole." alt="Opera 5" />
+            <div class="img-overlay"></div>
+          </div>
+
+          <div class="img-wrapper">
+            <span class="img-number">6</span>
+            <img src="https://cdn.prod.website-files.com/68154893f0097f15b764dc20/6816996f16bb926081d8494d_Pinacoteca_del_Castello_Sforzesco_1347.06.jpg" data-target="text-6" data-caption="Giannucole riceve l'arrivo di Gualtieri sulla soglia della propria casa, mentre Griselda attende all'interno." alt="Opera 6" />
+            <div class="img-overlay"></div>
+          </div>
+
+          <div class="img-wrapper">
+            <span class="img-number">7</span>
+            <img src="https://cdn.prod.website-files.com/68154893f0097f15b764dc20/681699724d966f2665a38b93_Pinacoteca_del_Castello_Sforzesco_1347.07.jpg" data-target="text-7" data-caption="Griselda, spogliata interamente dei propri abiti, viene rivestita dalle donne del seguito con le nuove vesti donatele da Gualtieri." alt="Opera 7" />
+            <div class="img-overlay"></div>
+          </div>
+
+          <div class="img-wrapper">
+            <span class="img-number">17</span>
+            <img src="https://cdn.prod.website-files.com/68154893f0097f15b764dc20/6816996d936df625258e5ea2_Pinacoteca_del_Castello_Sforzesco_1347.17.jpg" data-target="text-17" data-caption="Gualtieri ripudia Griselda alla presenza della corte, leggendo una finta bolla papale per far credere di aver ottenuto la licenza di risposarsi." alt="Opera 17" />
+            <div class="img-overlay"></div>
+          </div>
+
+          <div class="img-wrapper">
+            <span class="img-number">18</span>
+            <img src="https://cdn.prod.website-files.com/68154893f0097f15b764dc20/6816996dc6459a395628db58_Pinacoteca_del_Castello_Sforzesco_1347.18.jpg" data-target="text-18" data-caption="Griselda viene spogliata delle sue vesti nobiliari e fatta allontanare da Gualtieri con indosso solo una camicia; Griselda ritorna dal padre Giannucole, il quale la attende sulla soglia con il suo vecchio abito." alt="Opera 18" />
+            <div class="img-overlay"></div>
+          </div>
+
+          <div class="img-wrapper">
+            <span class="img-number">19</span>
+            <img src="https://cdn.prod.website-files.com/68154893f0097f15b764dc20/6816996cee9f0a01142e850c_Pinacoteca_del_Castello_Sforzesco_1347.19.jpg" data-target="text-19" data-caption="Due messi inviati da Gualtieri si recano presso la casa di Giannucole per convocare Griselda al castello; Gualtieri ordina a Griselda di compiere i preparativi per le sue seconde nozze." alt="Opera 19" />
+            <div class="img-overlay"></div>
+          </div>
+        </div>
+
+        <div class="slide" data-wall="4" style="grid-template-columns: repeat(3,1fr); grid-template-rows: repeat(2,1fr);">
+          <div class="slide-title">Parete IV</div>
+
+          <div class="img-wrapper">
+            <span class="img-number">8</span>
+            <img src="https://cdn.prod.website-files.com/68154893f0097f15b764dc20/68169972623192bfdb92897a_Pinacoteca_del_Castello_Sforzesco_1347.08.jpg" data-target="text-8" data-caption="Giannucole unisce Gualtieri e Griselda in matrimonio alla presenza della corte del marchese." alt="Opera 8" />
+            <div class="img-overlay"></div>
+          </div>
+
+          <div class="img-wrapper">
+            <span class="img-number">9</span>
+            <img src="https://cdn.prod.website-files.com/68154893f0097f15b764dc20/68169972cda64534a038715d_Pinacoteca_del_Castello_Sforzesco_1347.09.jpg" data-target="text-9" data-caption="Guatieri conduce Griselda al castello, scortata dal corteo nuziale." alt="Opera 9" />
+            <div class="img-overlay"></div>
+          </div>
+
+          <div class="img-wrapper">
+            <span class="img-number">10</span>
+            <img src="https://cdn.prod.website-files.com/68154893f0097f15b764dc20/68169972032cc8cd98b88a6a_Pinacoteca_del_Castello_Sforzesco_1347.10.jpg" data-target="text-10" data-caption="Al castello di Gualtieri si svolgono il banchetto e le celebrazioni per il matrimonio." alt="Opera 10" />
+            <div class="img-overlay"></div>
+          </div>
+
+          <div class="img-wrapper">
+            <span class="img-number">20</span>
+            <img src="https://cdn.prod.website-files.com/68154893f0097f15b764dc20/6816996cf7a8aada9a8d8973_Pinacoteca_del_Castello_Sforzesco_1347.20.jpg" data-target="text-20" data-caption="Griselda accoglie l'arrivo della giovane sposa, la quale è accompagnata dal fratello e dal conte di Panago." alt="Opera 20" />
+            <div class="img-overlay"></div>
+          </div>
+
+          <div class="img-wrapper">
+            <span class="img-number">21</span>
+            <img src="https://cdn.prod.website-files.com/68154893f0097f15b764dc20/6816996d4a5d9978b3772242_Pinacoteca_del_Castello_Sforzesco_1347.21.jpg" data-target="text-21" data-caption="Durante il banchetto Gualtieri rivela a Griselda la vera identità dei due giovani fanciulli." alt="Opera 21" />
+            <div class="img-overlay"></div>
+          </div>
+
+          <div class="img-wrapper">
+            <span class="img-number">22</span>
+            <img src="https://cdn.prod.website-files.com/68154893f0097f15b764dc20/6816996d7ee8c804a2b178d0_Pinacoteca_del_Castello_Sforzesco_1347.22.jpg" data-target="text-22" data-caption="Le donne aiutano Griselda ad indossare nuovamente le vesti nobiliari; Griselda riceve gli omaggi da parte di suo figlio e del resto della corte." alt="Opera 22" />
+            <div class="img-overlay"></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="slideshow-dots" class="slideshow-dots" aria-label="Navigazione slideshow"></div>
+    </div>
+  </aside>
+
+  <main class="right-panel" id="textPanel">
+    <div class="text-flow">
+      <section class="text-section" id="text-intro">
+        <h2><i>Decameron</i>, X 10</h2>
+        <p>Il marchese di Saluzzo, da’ prieghi de’ suoi uomini costretto di pigliar moglie, per prenderla a suo modo, piglia una figliuola d’un villano, della quale ha due figliuoli, li quali le fa veduto d’uccidergli; poi, mostrando lei essergli rincresciuta ed avere altra moglie presa, a casa faccendosi ritornare la propria figliuola come se sua moglie fosse, lei avendo in camiscia cacciata e ad ogni cosa trovandola paziente, piú cara che mai in casa tornatalasi, i suoi figliuoli grandi le mostra e come marchesana l’onora e fa onorare.</p>
+        <p>Finita la lunga novella del re, molto a tutti nel sembiante piaciuta, Dioneo ridendo disse: — Il buono uomo, che aspettava la seguente notte di fare abbassare la coda ritta della fantasima, avrebbe dati men di due denari di tutte le lode che voi date a messer Torello. — Ed appresso, sappiendo che a lui solo restava il dire, incominciò:</p>
+        <p>Mansuete mie donne, per quel che mi paia, questo dí d’oggi è stato dato a re ed a soldani ed a cosí fatta gente: e per ciò, acciò che io troppo da voi non mi scosti, vo’ ragionar d’un marchese non una cosa magnifica ma una matta bestialitá, come che ben ne gli seguisse alla fine; la quale io non consiglio alcun che segua, per ciò che gran peccato fu che a costui ben n’avvenisse.</p>
+      </section>
+
+      <section class="text-section" id="text-1"><div class="image-label"><span class="icon-number">1</span></div><p>Già è gran tempo, fu tra’ marchesi di Saluzzo il maggior della casa un giovane chiamato Gualtieri, il quale, essendo senza moglie e senza figliuoli, in niuna altra cosa il suo tempo spendeva che in uccellare ed in cacciare, né di prender moglie né d’aver figliuoli alcun pensiero avea; di che egli era da reputar molto savio. La qual cosa a’ suoi uomini non piacendo, piú volte il pregaron che moglie prendesse, acciò che egli senza erede né essi senza signor rimanessero, offerendosi di trovargliel tale e di sí fatto padre e madre discesa, che buona speranza se ne potrebbe avere, ed esso contentarsene molto. A’ quali Gualtieri rispose: — Amici miei, voi mi strignete a quello che io del tutto aveva disposto di non far mai, considerando quanto grave cosa sia a poter trovare chi co’ suoi costumi ben si convenga, e quanto del contrario sia grande la copia, e come dura vita sia quella di colui che a donna non bene a sé conveniente s’abbatte. Ed il dire che voi vi crediate a’ costumi de’ padri e delle madri le figliuole conoscere, donde argomentate di darlami tal che mi piacerá, è una sciocchezza, con ciò sia cosa che io non sappia dove i padri possiate conoscere, né come i segreti delle madri di quelle: quantunque, pur conoscendogli, sieno spesse volte le figliuole a’ padri ed alle madri dissimili. Ma poi che pure in queste catene vi piace d’annodarmi, ed io voglio esser contento: ed acciò che io non abbia da dolermi d’altrui che di me, se mal venisse fatto, io stesso ne voglio essere il trovatore, affermandovi che, cui che io mi tolga, se da voi non fia come donna onorata, voi proverete con gran vostro danno quanto grave mi sia l’aver contra mia voglia presa mogliere a’ vostri prieghi. — I valenti uomini risposon che eran contenti, sol che esso si recasse a prender moglie.</p></section>
+      <section class="text-section" id="text-2"><div class="image-label"><span class="icon-number">2</span></div><p>Erano a Gualtieri buona pezza piaciuti i costumi d’una povera giovanetta che d’una villa vicina a casa sua era, e parendogli bella assai, estimò che con costei dovesse potere aver vita assai consolata; e per ciò, senza piú avanti cercare, costei propose di volere sposare: e fattosi il padre chiamare, con lui, che poverissimo era, si convenne di tôrla per moglie. Fatto questo, fece Gualtieri tutti i suoi amici della contrada adunare, e disse loro: — Amici miei, egli v’è piaciuto e piace che io mi disponga a tôr moglie, ed io mi vi son disposto piú per compiacere a voi che per disidèro che io di moglie avessi. Voi sapete quello che voi mi prometteste, cioè d’esser contenti e d’onorar come donna, qualunque quella fosse che io togliessi; e per ciò venuto è il tempo che io sono per servare a voi la promessa e che io voglio che voi a me la serviate. Io ho trovata una giovane secondo il cuor mio, assai presso di qui, la quale io intendo di tôr per moglie e di menarlami tra qui e pochi dí a casa: e per ciò pensate come la festa delle nozze sia bella e come voi onorevolmente riceverla possiate, acciò che io mi possa della vostra promession chiamar contento come voi della mia vi potrete chiamare. — I buoni uomini lieti tutti risposero ciò piacer loro e che, fosse chi volesse, essi l’avrebber per donna ed onorerebbonla in tutte cose sí come donna; ed appresso questo, tutti si misero in assetto di far bella e grande e lieta festa, ed il simigliante fece Gualtieri.</p></section>
+      <section class="text-section" id="text-3"><div class="image-label"><span class="icon-number">3</span></div><p>Egli fece preparar le nozze grandissime e belle, ed invitarvi molti suoi amici e parenti e gran gentili uomini ed altri da torno: ed oltre a questo, fece tagliare e far piú robe belle e ricche al dosso d’una giovane la quale della persona gli pareva che la giovanetta la quale avea proposto di sposare, ed oltre a questo, apparecchiò cinture ed anella ed una ricca e bella corona, e tutto ciò che a novella sposa si richiedea.</p></section>
+      <section class="text-section" id="text-4"><div class="image-label"><span class="icon-number">4</span></div><p>E venuto il dì che alle nozze predetto avea, Gualtieri in su la mezza terza montò a cavallo, e ciascuno altro che ad onorarlo era venuto; ed ogni cosa opportuna avendo disposta, disse: — Signori, tempo è d’andare per la novella sposa. —</p></section>
+      <section class="text-section" id="text-5"><div class="image-label"><span class="icon-number">5</span></div><p>E messosi in via con tutta la compagnia sua, pervennero alla villetta: e giunti a casa del padre della fanciulla, e lei trovata che con acqua tornava dalla fonte in gran fretta, per andar poi con altre femine a veder venire la sposa di Gualtieri; la quale come Gualtier vide, chiamatala per nome, cioè Griselda, domandò dove il padre fosse; al quale ella vergognosamente rispose: — Signor mio, egli è in casa. —</p></section>
+      <section class="text-section" id="text-6"><div class="image-label"><span class="icon-number">6</span></div><p>Allora Gualtieri, smontato e comandato ad ogni uom che l’aspettasse, solo se n’entrò nella povera casa, dove trovò il padre di lei, che avea nome Giannucolo, e dissegli: — Io sono venuto a sposar la Griselda, ma prima da lei voglio sapere alcuna cosa in tua presenza. — E domandolla se ella sempre, togliendola egli per moglie, s’ingegnerebbe di compiacergli e di niuna cosa che egli dicesse o facesse non turbarsi, e se ella sarebbe obediente e simili altre cose assai, delle quali ella a tutte rispose del sì.</p></section>
+      <section class="text-section" id="text-7"><div class="image-label"><span class="icon-number">7</span></div><p>Allora Gualtieri, presala per mano, la menò fuori, ed in presenza di tutta la sua compagnia e d’ogni altra persona la fece spogliare ignuda: e fattisi quegli vestimenti venire che fatti aveva fare, prestamente la fece vestire e calzare, e sopra i suoi capelli, cosí scarmigliati come erano, le fece mettere una corona, ed appresso questo, maravigliandosi ogni uomo di questa cosa, disse: — Signori, costei è colei la quale io intendo che mia moglie sia, dove ella me voglia per marito. —</p></section>
+      <section class="text-section" id="text-8"><div class="image-label"><span class="icon-number">8</span></div><p>E poi, a lei rivolto che di se medesima vergognosa e sospesa stava, le disse: — Griselda, vuoimi tu per tuo marito? — A cui ella rispose: — Signor mio, sí. — Ed egli disse: — Ed io voglio te per mia moglie. — Ed in presenza di tutti la sposò:</p></section>
+      <section class="text-section" id="text-9"><div class="image-label"><span class="icon-number">9</span></div><p>e fattala sopra un pallafren montare, orrevolmente accompagnata, a casa la si menò.</p></section>
+      <section class="text-section" id="text-10"><div class="image-label"><span class="icon-number">10</span></div><p>Quivi furon le nozze belle e grandi e la festa non altramenti che se presa avesse la figliuola del re di Francia.</p></section>
+      <section class="text-section" id="text-11"><div class="image-label"><span class="icon-number">11</span></div><p>La giovane sposa parve che co’ vestimenti insieme l’animo ed i costumi mutasse. Ella era, come giá dicemmo, di persona e di viso bella, e cosí come bella era, divenne tanto avvenevole, tanto piacevole e tanto costumata, che non figliuola di Giannucolo e guardiana di pecore pareva stata, ma d’alcun nobile signore; di che ella faceva maravigliare ogni uom che prima conosciuta l’avea: ed oltre a questo, era tanto obediente al marito e tanto servente, che egli si teneva il piú contento ed il piú appagato uomo del mondo, e similmente verso i sudditi del marito era tanto graziosa e tanto benigna, che niun ve n’era che piú che sé non l’amasse e che non l’onorasse di buon grado, tutti per lo suo bene e per lo suo stato e per lo suo esaltamento pregando, dicendo, dove dir soleano Gualtieri aver fatto come poco savio d’averla per moglie presa, che egli era il piú savio ed il piú avveduto uomo che al mondo fosse, per ciò che niuno altro che egli avrebbe mai potuto conoscere l’alta vertú di costei nascosa sotto i poveri panni e sotto l’abito villesco. Ed in brieve, non solamente nel suo marchesato ma per tutto, anzi che gran tempo fosse passato, seppe ella sí fare, che ella fece ragionare del suo valore e del suo bene adoperare, ed in contrario rivolgere, se alcuna cosa detta s’era contro al marito per lei quando sposata l’avea.</p></section>
+      <section class="text-section" id="text-12"><div class="image-label"><span class="icon-number">12</span></div><p>Ella non fu guari con Gualtieri dimorata che ella ingravidò, ed al tempo debito partorí una fanciulla, di che Gualtieri fece gran festa. Ma poco appresso, entratogli un nuovo pensier nell’animo, cioè di volere con lunga esperienza e con cose intollerabili provare la pazienza di lei, primieramente la punse con parole, mostrandosi turbato e dicendo che i suoi uomini pessimamente si contentavano di lei per la sua bassa condizione, e spezialmente poi che vedevano che ella portava figliuoli, e della figliuola che nata era tristissimi, altro che mormorar non faceano. Le quali parole udendo la donna, senza mutar viso o buon proponimento in alcuno atto, disse: — Signor mio, fa’ di me quello che tu credi che piú tuo onore o consolazion sia, ché io sarò di tutto contenta, sí come colei che conosco che io sono da men di loro e che io non era degna di questo onore al quale tu per tua cortesia mi recasti. — Questa risposta fu molto cara a Gualtieri, conoscendo costei non essere in alcuna superbia levata per onore che egli o altri fatto l’avesse.</p></section>
+      <section class="text-section" id="text-13"><div class="image-label"><span class="icon-number">13</span></div><p>Poco tempo appresso, avendo con parole generali detto alla moglie che i sudditi non potevan patir quella fanciulla di lei nata,</p></section>
+      <section class="text-section" id="text-14"><div class="image-label"><span class="icon-number">14</span></div><p>informato un suo famigliare, il mandò a lei, il quale con assai dolente viso le disse: — Madonna, se io non voglio morire, a me convien far quello che il mio signor mi comanda. Egli m’ha comandato che io prenda questa vostra figliuola e che io... — e non disse piú. La donna, udendo le parole e veggendo il viso del famigliare, e delle parole dette ricordandosi, comprese che a costui fosse imposto che egli l’uccidesse; per che prestamente, presala della culla e basciatala e benedettala, come che gran noia nel cuor sentisse, senza mutar viso, in braccio la pose al famigliare e dissegli: — Te’, fa’ compiutamente quello che il tuo e mio signore t’ha imposto: ma non la lasciar per modo che le bestie e gli uccelli la divorino, salvo se egli nol ti comandasse. — Il famigliare, presa la fanciulla e fatto a Gualtier sentire ciò che detto aveva la donna, maravigliandosi egli della sua costanza, lui con essa ne mandò a Bologna ad una sua parente, pregandola che, senza mai dire cui figliuola si fosse, diligentemente l’allevasse e costumasse.</p></section>
+      <section class="text-section" id="text-15"><div class="image-label"><span class="icon-number">15</span></div><p>Sopravvenne appresso che la donna da capo ingravidò, ed al tempo debito partorí un figliuol maschio, il che carissimo fu a Gualtieri; ma non bastandogli quello che fatto avea, con maggior puntura trafisse la donna, e con sembiante turbato un dí le disse: — Donna, poscia che tu questo figliuol maschio facesti, per niuna guisa con questi miei viver son potuto, sí duramente si ramaricano che un nepote di Giannucolo dopo me debba rimaner lor signore; di che io mi dótto, se io non ci vorrò esser cacciato, che non mi ci convenga fare di quello che io altra volta feci, ed alla fine lasciar te e prendere un’altra moglie. — La donna con paziente animo l’ascoltò, né altro rispose se non: — Signor mio, pensa di contentar te e di sodisfare al piacer tuo, e di me non avere pensiero alcuno, per ciò che niuna cosa m’è cara se non quanto io la veggio a te piacere. —</p></section>
+      <section class="text-section" id="text-16"><div class="image-label"><span class="icon-number">16</span></div><p>Dopo non molti dí Gualtieri, in quella medesima maniera che mandato aveva per la figliuola, mandò per lo figliuolo, e similmente dimostrato d’averlo fatto uccidere, a nutricar nel mandò a Bologna, come la fanciulla aveva mandata; della qual cosa la donna né altro viso né altre parole fece che della fanciulla fatto avesse, di che Gualtieri si maravigliava forte, e seco stesso affermava, niuna altra femina questo poter fare che ella faceva: e se non fosse che carnalissima de’ figliuoli, mentre gli piacea, la vedeva, lei avrebbe creduto ciò fare per piú non curarsene, dove come savia lei farlo conobbe. I sudditi suoi, credendo che egli uccidere avesse fatti i figliuoli, il biasimavan forte e reputavanlo crudele uomo, ed alla donna avevan grandissima compassione; la quale con le donne le quali con lei de’ figliuoli cosí morti si condoleano, mai altro non disse, se non che quel ne piaceva a lei che a colui che generati gli avea. Ma essendo piú anni passati dopo la nativitá della fanciulla, parendo tempo a Gualtieri di fare l’ultima pruova della sofferenza di costei, con molti de’ suoi disse che per niuna guisa piú sofferir poteva d’aver per moglie Griselda e che egli conosceva che male e giovenilmente aveva fatto quando l’aveva presa, e per ciò a suo potere voleva procacciar col papa che con lui dispensasse che un’altra donna prender potesse e lasciar Griselda; di che egli da assai buoni uomini fu molto ripreso, a che nulla altro rispose, se non che conveniva che cosí fosse. La donna, sentendo queste cose e parendole dovere sperare di ritornare a casa del padre, e forse a guardar le pecore come altra volta aveva fatto, e vedere ad un’altra donna tener colui al quale ella voleva tutto il suo bene, forte in se medesima si dolea: ma pur, come l’altre ingiurie della fortuna aveva sostenute, cosí con fermo viso si dispose a questa dover sostenere.</p></section>
+      <section class="text-section" id="text-17"><div class="image-label"><span class="icon-number">17</span></div><p>Non dopo molto tempo Gualtieri fece venire sue lettere contraffatte da Roma, e fece veduto a’ suoi sudditi, il papa per quelle aver seco dispensato di poter tôrre altra moglie e lasciar Griselda; per che, fattalasi venir dinanzi, in presenza di molti le disse: — Donna, per concession fattami dal papa io posso altra donna pigliare e lasciar te: e per ciò che i miei passati sono stati gran gentili uomini e signori di queste contrade, dove i tuoi stati son sempre lavoratori, io intendo che tu piú mia moglie non sia, ma che tu a casa Giannucolo te ne torni con la dota che tu mi recasti, ed io poi un’altra, che trovata n’ho convenevole a me, ce ne menerò. — La donna, udendo queste parole, non senza grandissima fatica, oltre alla natura delle femine, ritenne le lagrime, e rispose: — Signor mio, io conobbi sempre la mia bassa condizione alla vostra nobiltá in alcun modo non convenirsi, e quello che io stata son con voi, da Dio e da voi il riconoscea, né mai come donatolmi, mio il feci o tenni, ma sempre l’ebbi come prestatomi; piácevi di rivolerlo, ed a me dée piacere e piace di renderlovi: ecco il vostro anello col quale voi mi sposaste, prendetelo. Comandatemi che io quella dota me ne porti che io ci recai, alla qual cosa fare né a voi pagatore né a me borsa bisognerá né somiere, per ciò che di mente uscito non m’è che ignuda m’aveste: e se voi giudicate onesto che quel corpo nel quale io ho portati figliuoli da voi generati, sia da tutti veduto, io me n’andrò ignuda: ma io vi priego, in premio della mia virginitá che io ci recai e non ne la porto, che almeno una sola camiscia sopra la dota mia vi piaccia che io portarne possa. —</p></section>
+      <section class="text-section" id="text-18"><div class="image-label"><span class="icon-number">18</span></div><p>Gualtieri, che maggior voglia di piagnere aveva che d’altro, stando pur col viso duro, disse: — E tu una camiscia ne porta. — Quanti dintorno v’erano il pregavano che egli una roba le donasse, ché non fosse veduta colei che sua moglie tredici anni o piú era stata, di casa sua cosí poveramente e cosí vituperosamente uscire, come era uscirne in camiscia: ma invano andarono i prieghi; di che la donna in camiscia e scalza e senza alcuna cosa in capo, accomandatigli a Dio, gli uscí di casa ed al padre se ne tornò, con lagrime e con pianto di tutti coloro che la videro. Giannucolo, che creder non avea mai potuto questo esser vero, che Gualtieri la figliuola dovesse tener moglie, ed ognidí questo caso aspettando, guardati l’aveva i panni che spogliati s’avea quella mattina che Gualtieri la sposò;</p></section>
+      <section class="text-section" id="text-19"><div class="image-label"><span class="icon-number">19</span></div><p>per che, recatigliele ed ella rivestitiglisi, a’ piccoli servigi della paterna casa si diede sí come far soleva, con forte animo sostenendo il fiero assalto della nemica fortuna. Come Gualtieri questo ebbe fatto, cosí fece veduto a’ suoi che presa aveva una figliuola d’un de’ conti da Panago: e faccendo fare l’appresto grande per le nozze, mandò per la Griselda che a lui venisse; alla quale venuta disse: — Io meno questa donna la quale io ho nuovamente tolta, ed intendo in questa sua prima venuta d’onorarla: e tu sai che io non ho in casa donne che mi sappiano acconciar le camere né fare molte cose che a cosí fatta festa si richeggiono; e per ciò tu, che meglio che altra persona queste cose di casa sai, metti in ordine quello che da far c’è, e quelle donne fa invitar che ti pare, e ricevile come se donna di qui fossi; poi, fatte le nozze, te ne potrai a casa tua tornare. — Come che queste parole fossero tutte coltella al cuor di Griselda, come a colei che non aveva cosí potuto por giú l’amore che ella gli portava come fatto aveva la buona fortuna, rispose: — Signor mio, io son presta ed apparecchiata. —</p></section>
+      <section class="text-section" id="text-cleaning"><p>Ed entratasene co’ suoi pannicelli romagnuoli e grossi in quella casa della qual poco avanti era uscita in camiscia, cominciò a spazzar le camere ed ordinarle, ed a far porre capoletti e pancali per le sale, a fare apprestar la cucina, e ad ogni cosa, come se una piccola fanticella della casa fosse, porre le mani: né mai ristette, che ella ebbe tutto acconcio ed ordinato quanto si conveniva. Ed appresso questo, fatto da parte di Gualtieri invitar tutte le donne della contrada, cominciò ad attender la festa: e venuto il giorno delle nozze, come che i panni avesse poveri indosso, con animo e costume donnesco tutte le donne che a quelle vennero, e con lieto viso, ricevette. Gualtieri, il quale diligentemente aveva i figliuoli fatti allevare in Bologna alla sua parente che maritata era in casa de’ conti da Panago, essendo giá la fanciulla, d’etá di dodici anni, la piú bella cosa che mai si vedesse, ed il fanciullo era di sei, avea mandato a Bologna al parente suo pregando che gli piacesse di dovere con questa sua figliuola e col figliuolo venire a Saluzzo ed ordinare di menar bella ed onorevole compagnia con seco, e di dire a tutti che costei per sua mogliere gli menasse, senza manifestare alcuna cosa ad alcuno chi ella si fosse altramenti.</p></section>
+      <section class="text-section" id="text-20"><div class="image-label"><span class="icon-number">20</span></div><p>Il gentile uomo, fatto secondo che il marchese il pregava, entrato in cammino, dopo alquanti dí con la fanciulla e col fratello e con nobile compagnia in su l’ora del desinare giunse a Saluzzo, dove tutti i paesani e molti altri vicini da torno trovò, che attendevan questa novella sposa di Gualtieri. La quale dalle donne ricevuta, e nella sala dove erano messe le tavole venuta, Griselda, cosí come era, le si fece lietamente incontro, dicendo: — Ben venga la mia donna! —</p></section>
+      <section class="text-section" id="text-arrival"><p>Le donne, che molto avevano, ma invano, pregato Gualtieri che o facesse che la Griselda si stesse in una camera o che egli alcuna delle robe che sue erano state le prestasse, acciò che cosí non andasse davanti a’ suoi forestieri, furon messe a tavola e cominciate a servire. La fanciulla era guardata da ogni uomo, e ciascun diceva che Gualtieri aveva fatto buon cambio: ma intra gli altri Griselda la lodava molto, e lei ed il suo fratellino. Gualtieri, al qual pareva pienamente aver veduto quantunque disiderava della pazienza della sua donna, veggendo che di niente la novitá delle cose la cambiava, ed essendo certo, ciò per mentecattaggine non avvenire, per ciò che savia molto la conoscea, gli parve tempo di doverla trarre dell’amaritudine la quale estimava che ella sotto il forte viso nascosa tenesse; per che, fattalasi venire, in presenza d’ogni uomo sorridendo le disse: — Che ti par della nostra sposa? — Signor mio, — rispose Griselda — a me ne par molto bene; e se cosí è savia come ella è bella, che il credo, io non dubito punto che voi non dobbiate con lei vivere il piú consolato signor del mondo: ma quanto posso vi priego che quelle punture, le quali all’altra che vostra fu giá, déste, non diate a questa, ché appena che io creda che ella le potesse sostenere, sí perché piú giovane è, e sí ancora perché in dilicatezze è allevata, ove colei in continue fatiche da piccolina era stata. —</p></section>
+      <section class="text-section" id="text-21"><div class="image-label"><span class="icon-number">21</span></div><p>Gualtieri, veggendo che ella fermamente credeva, costei dovere esser sua moglie, né per ciò in alcuna cosa men che ben parlava, la si fece sedere allato e disse: — Griselda, tempo è omai che tu senta frutto della tua lunga pazienza e che coloro li quali me hanno reputato crudele ed iniquo e bestiale conoscano che ciò che io faceva ad antiveduto fine operava, volendoti insegnar d’esser moglie ed a loro di saperla tenere, ed a me partorire perpetua quiete mentre teco a vivere avessi; il che, quando venni a prender moglie, gran paura ebbi che non m’intervenisse: e per ciò, per pruova pigliarne, in quanti modi tu sai ti punsi e trafissi. E però che io mai non mi sono accorto che in parola né in fatto dal mio piacere partita ti sii, parendo a me aver di te quella consolazione che io disiderava, intendo di rendere a te ad una ora ciò che io tra molte ti tolsi e con somma dolcezza le punture ristorare che io ti diedi: e per ciò con lieto animo prendi questa che tu mia sposa credi, ed il suo fratello, per tuoi e miei figliuoli; essi sono quegli li quali tu e molti altri lungamente stimato avete che io crudelmente uccider facessi, ed io sono il tuo marito, il quale sopra ogni altra cosa t’amo, credendomi poter dar vanto che niuno altro sia che, sí come io, si possa di sua moglier contentare. — E cosí detto, l’abbracciò e basciò, e con lei insieme, la qual d’allegrezza piagnea, levatosi, n’andarono lá dove la figliuola, tutta stupefatta queste cose ascoltando, sedea: ed abbracciatala teneramente, ed il fratello altressí, lei e molti altri che quivi erano sgannarono.</p></section>
+      <section class="text-section" id="text-22"><div class="image-label"><span class="icon-number">22</span></div><p>Le donne lietissime, levate dalle tavole, con Griselda n’andarono in camera e con migliore agurio trattile i suoi pannicelli, d’una nobile roba delle sue la rivestirono, e come donna, la quale ella eziandio negli stracci pareva, nella sala la rimenarono. E quivi fattasi co’ figliuoli maravigliosa festa, essendo ogni uomo lietissimo di questa cosa, il sollazzo ed il festeggiar multiplicarono ed in piú giorni tirarono: e savissimo reputaron Gualtieri, come che troppo reputassero agre ed intollerabili l’esperienze prese della sua donna, e sopra tutti savissima tenner Griselda.</p></section>
+      <section class="text-section" id="text-23"><div class="image-label"><span class="icon-number">23</span></div><p>Il conte da Panago si tornò dopo alquanti dí a Bologna, e Gualtieri, tolto Giannucolo dal suo lavorío, come suocero il pose in istato che egli onoratamente e con gran consolazione visse e finí la sua vecchiezza.</p></section>
+      <section class="text-section" id="text-24"><div class="image-label"><span class="icon-number">24</span></div><p>Ed egli appresso, maritata altamente la sua figliuola, con Griselda, onorandola sempre quanto piú si potea, lungamente e consolato visse.</p></section>
+      <section class="text-section" id="text-moral"><p>Che si potrà dir qui, se non che anche nelle povere case piovono dal cielo de’ divini spiriti, come nelle reali di quegli che sarien piú degni di guardar porci che d’avere sopra uomini signoria? Chi avrebbe altri che Griselda potuto col viso non solamente asciutto ma lieto sofferir le rigide e mai piú non udite pruove da Gualtier fatte? Al quale non sarebbe forse stato male investito d’essersi abbattuto ad una che, quando fuor di casa l’avesse in camiscia cacciata, s’avesse sí ad uno altro fatto scuotere il pilliccione, che riuscito ne fosse una bella roba.</p></section>
+      <div class="page-end-spacer" aria-hidden="true"></div>
+    </div>
+  </main>
+
+  <div id="lightbox" class="lightbox" aria-hidden="true">
+    <span class="close-lightbox" aria-label="Chiudi immagine">&times;</span>
+    <div class="lightbox-img-wrapper">
+      <img class="lightbox-img" src="" alt="Dettaglio opera" />
+    </div>
+    <div class="lightbox-caption"></div>
+  </div>
+
+  <script>
+    const slidesTrack = document.getElementById('slides');
+    const textPanel = document.getElementById('textPanel');
+    const leftPanel = document.querySelector('.left-panel');
+    const originalSlides = Array.from(slidesTrack.querySelectorAll('.slide'));
+    const totalSlides = originalSlides.length;
+
+    const firstClone = originalSlides[0].cloneNode(true);
+    const lastClone = originalSlides[totalSlides - 1].cloneNode(true);
+    slidesTrack.appendChild(firstClone);
+    slidesTrack.insertBefore(lastClone, slidesTrack.firstChild);
+
+    const allSlides = Array.from(slidesTrack.querySelectorAll('.slide'));
+    const allTextSections = Array.from(document.querySelectorAll('.text-section[id^="text-"]'));
+    const numberedSections = allTextSections.filter((section) => /^text-\d+$/.test(section.id));
+    const stackedLayoutBreakpoint = window.matchMedia('(max-width: 900px) and (orientation: portrait)');
+
+    let currentSlide = 1;
+    let isSliding = false;
+    let isManualScrollAction = false;
+    let targetSectionId = null;
+    let manualUnlockTimer = null;
+    let touchStartX = 0;
+    let ticking = false;
+    let currentActiveTargetId = null;
+    const manualScrollSnapTolerance = 12;
+
+    slidesTrack.style.transform = `translateX(-${currentSlide * 100}%)`;
+
+    const dotsContainer = document.getElementById('slideshow-dots');
+    const dots = [];
+    for (let i = 0; i < totalSlides; i++) {
+      const dot = document.createElement('button');
+      dot.type = 'button';
+      dot.className = 'slideshow-dot';
+      dot.setAttribute('aria-label', `Vai alla parete ${i + 1}`);
+      dot.addEventListener('click', () => goToSlide(i + 1, true));
+      dotsContainer.appendChild(dot);
+      dots.push(dot);
+    }
+
+    function updateDots() {
+      let visualIndex = currentSlide - 1;
+      if (visualIndex < 0) visualIndex = totalSlides - 1;
+      if (visualIndex >= totalSlides) visualIndex = 0;
+      dots.forEach((dot, index) => dot.classList.toggle('active', index === visualIndex));
+    }
+
+    function normalizeSlidePosition() {
+      if (currentSlide === 0) {
+        slidesTrack.style.transition = 'none';
+        currentSlide = totalSlides;
+        slidesTrack.style.transform = `translateX(-${currentSlide * 100}%)`;
+      } else if (currentSlide === totalSlides + 1) {
+        slidesTrack.style.transition = 'none';
+        currentSlide = 1;
+        slidesTrack.style.transform = `translateX(-${currentSlide * 100}%)`;
+      }
+    }
+
+    function goToSlide(targetIndex, force = false) {
+      if (isSliding && !force) return;
+
+      normalizeSlidePosition();
+
+      let renderedTargetIndex = targetIndex;
+
+      if (currentSlide === totalSlides && targetIndex === 1) {
+        renderedTargetIndex = totalSlides + 1;
+      } else if (currentSlide === 1 && targetIndex === totalSlides) {
+        renderedTargetIndex = 0;
+      }
+
+      if (currentSlide === renderedTargetIndex) {
+        updateDots();
+        return;
+      }
+
+      isSliding = true;
+      currentSlide = renderedTargetIndex;
+      slidesTrack.style.transition = 'transform 0.45s ease';
+      slidesTrack.style.transform = `translateX(-${currentSlide * 100}%)`;
+      updateDots();
+
+      window.setTimeout(() => {
+        isSliding = false;
+      }, 450);
+    }
+
+    function nextSlide() { goToSlide(currentSlide + 1); }
+    function prevSlide() { goToSlide(currentSlide - 1); }
+
+    document.getElementById('prevArrow').addEventListener('click', prevSlide);
+    document.getElementById('nextArrow').addEventListener('click', nextSlide);
+
+    slidesTrack.addEventListener('transitionend', () => {
+      normalizeSlidePosition();
+      isSliding = false;
+      updateDots();
+    });
+
+    updateDots();
+
+    function attachSwipe(el) {
+      el.addEventListener('touchstart', (e) => {
+        touchStartX = e.touches[0].clientX;
+      }, { passive: true });
+
+      el.addEventListener('touchend', (e) => {
+        if (isSliding) return;
+        const diff = e.changedTouches[0].clientX - touchStartX;
+        if (Math.abs(diff) > 50) {
+          diff < 0 ? nextSlide() : prevSlide();
+        }
+      }, { passive: true });
+    }
+
+    attachSwipe(document.querySelector('.slideshow-shell'));
+    attachSwipe(slidesTrack);
+
+    function clearActiveState() {
+      document.querySelectorAll('.img-number').forEach((num) => num.classList.remove('active-number'));
+      document.querySelectorAll('.img-wrapper').forEach((wrapper) => wrapper.classList.remove('active-image'));
+      document.querySelectorAll('.text-section').forEach((section) => section.classList.remove('is-active'));
+    }
+
+    function setActiveTarget(targetId) {
+      document.querySelectorAll(`img[data-target="${targetId}"]`).forEach((img) => {
+        const wrapper = img.closest('.img-wrapper');
+        const badge = wrapper ? wrapper.querySelector('.img-number') : null;
+        if (wrapper) {
+          wrapper.classList.add('active-image');
+          wrapper.classList.add('revealed-image');
+        }
+        if (badge) badge.classList.add('active-number');
+      });
+
+      const section = document.getElementById(targetId);
+      if (section) section.classList.add('is-active');
+    }
+
+    function isImageSelected(wrapper) {
+      return !!wrapper?.querySelector('.img-number.active-number');
+    }
+
+    function getOriginalImageByTarget(targetId) {
+      for (const slide of originalSlides) {
+        const found = slide.querySelector(`img[data-target="${targetId}"]`);
+        if (found) return found;
+      }
+      return null;
+    }
+
+    function getTriggerLineY() {
+      if (stackedLayoutBreakpoint.matches) {
+        return leftPanel.getBoundingClientRect().bottom;
+      }
+      return textPanel.getBoundingClientRect().top;
+    }
+
+    function releaseManualScrollLock() {
+      isManualScrollAction = false;
+      targetSectionId = null;
+      if (manualUnlockTimer) {
+        window.clearTimeout(manualUnlockTimer);
+        manualUnlockTimer = null;
+      }
+    }
+
+    function hasSectionReachedTrigger(section) {
+      return section.getBoundingClientRect().top <= getTriggerLineY() + 1;
+    }
+
+    function findActiveSectionByTrigger() {
+      const triggerLineY = getTriggerLineY();
+      let activeSection = null;
+
+      for (const section of allTextSections) {
+        if (section.getBoundingClientRect().top <= triggerLineY + 1) {
+          activeSection = section;
+        } else {
+          break;
+        }
+      }
+
+      return activeSection;
+    }
+
+    function scrollSectionPrecisely(section) {
+      if (stackedLayoutBreakpoint.matches) {
+        const targetTop = window.scrollY + section.getBoundingClientRect().top - leftPanel.getBoundingClientRect().bottom;
+        window.scrollTo({ top: targetTop, behavior: 'smooth' });
+      } else {
+        const panelTop = textPanel.getBoundingClientRect().top;
+        const targetTop = textPanel.scrollTop + section.getBoundingClientRect().top - panelTop;
+        textPanel.scrollTo({ top: targetTop, behavior: 'smooth' });
+      }
+    }
+
+    function activateSection(sectionId, forceSlide = false) {
+      const img = getOriginalImageByTarget(sectionId);
+      if (!img) return;
+
+      if (currentActiveTargetId !== sectionId) {
+        clearActiveState();
+        setActiveTarget(sectionId);
+        currentActiveTargetId = sectionId;
+      }
+
+      const parentSlide = img.closest('.slide');
+      const targetIndex = allSlides.indexOf(parentSlide);
+      if (targetIndex !== -1) {
+        goToSlide(targetIndex, forceSlide);
+      }
+    }
+
+    function syncScrollWithImages() {
+      if (isManualScrollAction && targetSectionId) {
+        const targetSection = document.getElementById(targetSectionId);
+        if (!targetSection) {
+          releaseManualScrollLock();
+        } else {
+          const activeSectionAtTrigger = findActiveSectionByTrigger();
+          const targetIsActive = activeSectionAtTrigger && activeSectionAtTrigger.id === targetSectionId;
+
+          if (targetIsActive && hasSectionReachedTrigger(targetSection)) {
+            releaseManualScrollLock();
+          }
+        }
+      }
+
+      if (isManualScrollAction) return;
+
+      const activeSection = findActiveSectionByTrigger();
+      if (activeSection) {
+        const hasMappedImage = !!getOriginalImageByTarget(activeSection.id);
+        if (hasMappedImage) {
+          activateSection(activeSection.id);
+        } else if (currentActiveTargetId !== null) {
+          currentActiveTargetId = null;
+          clearActiveState();
+        }
+      } else {
+        if (currentActiveTargetId !== null) {
+          currentActiveTargetId = null;
+          clearActiveState();
+        }
+        goToSlide(1);
+      }
+    }
+
+    function requestSync() {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        syncScrollWithImages();
+        ticking = false;
+      });
+    }
+
+    document.querySelectorAll('.img-wrapper').forEach((wrapper) => {
+      const img = wrapper.querySelector('img[data-target]');
+      if (!img) return;
+
+      wrapper.addEventListener('click', () => {
+        const targetId = img.dataset.target;
+        const section = document.getElementById(targetId);
+        if (!section) return;
+
+        isManualScrollAction = true;
+        targetSectionId = targetId;
+        if (manualUnlockTimer) window.clearTimeout(manualUnlockTimer);
+
+        activateSection(targetId, true);
+
+        scrollSectionPrecisely(section);
+
+        manualUnlockTimer = window.setTimeout(() => {
+          releaseManualScrollLock();
+          requestSync();
+        }, 1800);
+      });
+
+      wrapper.addEventListener('dblclick', (e) => {
+        if (!isImageSelected(wrapper)) return;
+        e.preventDefault();
+        openLightbox(img.src, img.dataset.caption || '');
+      });
+
+      let lastTapTime = 0;
+      wrapper.addEventListener('touchend', (e) => {
+        const now = Date.now();
+        const isDoubleTap = now - lastTapTime > 0 && now - lastTapTime < 350;
+        lastTapTime = now;
+
+        if (!isDoubleTap || !isImageSelected(wrapper)) return;
+
+        e.preventDefault();
+        e.stopPropagation();
+        openLightbox(img.src, img.dataset.caption || '');
+      }, { passive: false });
+    });
+
+    textPanel.addEventListener('scroll', requestSync, { passive: true });
+    window.addEventListener('scroll', requestSync, { passive: true });
+    window.addEventListener('load', requestSync);
+    window.addEventListener('resize', requestSync);
+
+    if (typeof stackedLayoutBreakpoint.addEventListener === 'function') {
+      stackedLayoutBreakpoint.addEventListener('change', requestSync);
+    } else if (typeof stackedLayoutBreakpoint.addListener === 'function') {
+      stackedLayoutBreakpoint.addListener(requestSync);
+    }
+
+    requestSync();
+
+    const swipeContainer = document.querySelector('.slideshow-shell');
+    let lastWheelTime = 0;
+    const wheelCooldown = 450;
+
+    swipeContainer.addEventListener('wheel', (e) => {
+      if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
+      e.preventDefault();
+
+      const now = Date.now();
+      if (now - lastWheelTime < wheelCooldown || isSliding) return;
+
+      if (e.deltaX > 30) {
+        nextSlide();
+        lastWheelTime = now;
+      } else if (e.deltaX < -30) {
+        prevSlide();
+        lastWheelTime = now;
+      }
+    }, { passive: false });
+
+    const lightbox = document.getElementById('lightbox');
+    const lightboxWrapper = document.querySelector('.lightbox-img-wrapper');
+    const lightboxImg = document.querySelector('.lightbox-img');
+    const lightboxCaption = document.querySelector('.lightbox-caption');
+    const closeBtn = document.querySelector('.close-lightbox');
+
+    function openLightbox(src, caption) {
+      lightboxImg.src = src;
+      lightboxCaption.textContent = caption || '';
+      lightboxWrapper.classList.remove('zoomed');
+      lightboxImg.style.transform = 'scale(1)';
+      lightboxImg.style.transformOrigin = 'center center';
+      lightbox.style.display = 'flex';
+      lightbox.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeLightbox() {
+      lightbox.style.display = 'none';
+      lightbox.setAttribute('aria-hidden', 'true');
+      lightboxWrapper.classList.remove('zoomed');
+      lightboxImg.style.transform = 'scale(1)';
+      lightboxImg.style.transformOrigin = 'center center';
+    }
+
+    closeBtn.addEventListener('click', closeLightbox);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeLightbox();
+    });
+    lightbox.addEventListener('click', (e) => {
+      if (e.target === lightbox) closeLightbox();
+    });
+
+    lightboxWrapper.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (lightboxWrapper.classList.contains('zoomed')) {
+        lightboxWrapper.classList.remove('zoomed');
+        lightboxImg.style.transform = 'scale(1)';
+        lightboxImg.style.transformOrigin = 'center center';
+      } else {
+        lightboxWrapper.classList.add('zoomed');
+        lightboxImg.style.transform = 'scale(2.25)';
+        panImage(e);
+      }
+    });
+
+    lightboxWrapper.addEventListener('mousemove', (e) => {
+      if (lightboxWrapper.classList.contains('zoomed')) panImage(e);
+    });
+
+    function panImage(e) {
+      const rect = lightboxWrapper.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const xPercent = (x / rect.width) * 100;
+      const yPercent = (y / rect.height) * 100;
+      lightboxImg.style.transformOrigin = `${xPercent}% ${yPercent}%`;
+    }
+  </script>
+</body>
+</html>
