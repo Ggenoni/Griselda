@@ -597,6 +597,49 @@
       margin-bottom: 0;
     }
 
+    .info-modal-actions {
+      display: flex;
+      justify-content: center;
+      margin-top: 1.9rem;
+    }
+
+    .info-modal-start {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: min(100%, 16rem);
+  max-width: 100%;
+  padding: 0.85rem 1.4rem;
+  border: 1px solid rgba(36, 89, 196, 0.22);
+  border-radius: 999px;
+  background: rgba(36, 89, 196, 0.06);
+  color: var(--accent);
+  font-family: var(--font-ui);
+  font-size: 0.96rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: none;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.info-modal-start::after {
+  content: "";
+}
+
+.info-modal-start:hover,
+.info-modal-start:focus-visible {
+  background: rgba(36, 89, 196, 0.1);
+  border-color: rgba(36, 89, 196, 0.32);
+  outline: none;
+}
+
+.info-modal-start:active {
+  background: rgba(36, 89, 196, 0.14);
+}
+
     .info-modal-label {
       margin: 1.4rem 0 0.35rem;
       font-family: var(--font-ui);
@@ -971,21 +1014,39 @@
     .site-shell.is-phone-device .page-end-spacer { height: 9vh; }
 
     html.phone-force-landscape .info-modal {
-      padding: 1rem;
+      padding: 0;
+      justify-content: flex-start;
+      align-items: flex-start;
+      overflow: hidden;
     }
 
     html.phone-force-landscape .info-modal-panel {
-      width: min(100%, 1200px);
-      max-width: calc(100vw - 2rem);
-      max-height: calc(100svh - 2rem);
+      position: relative;
+      width: var(--phone-landscape-width);
+      min-width: var(--phone-landscape-width);
+      max-width: var(--phone-landscape-width);
+      height: var(--phone-landscape-height);
+      min-height: var(--phone-landscape-height);
+      max-height: var(--phone-landscape-height);
+      margin: 0;
       padding: 1.15rem 1rem 1.25rem;
-      border-radius: 14px;
+      border-radius: 0;
     }
 
     html.phone-force-landscape .info-modal-close {
       width: 2.15rem;
       height: 2.15rem;
       font-size: 1.35rem;
+    }
+
+    @media (max-width: 900px) and (orientation: portrait) {
+      html.phone-force-landscape .info-modal-panel {
+        position: absolute;
+        top: 0;
+        left: 0;
+        transform: rotate(90deg) translateY(calc(-1 * var(--phone-landscape-height)));
+        transform-origin: top left;
+      }
     }
 
     .site-shell.is-phone-device.is-portrait-phone {
@@ -1311,9 +1372,11 @@
     La pagina web è stata realizzata da Gaudenzia Genoni.
   </p>
 <br>
-  <p class="info-modal-closing">
-    Buona visita!
-  </p>
+  <div class="info-modal-actions">
+    <button type="button" class="info-modal-start" id="startVisitBtn" aria-label="Inizia la visita">
+      <span>Inizia la visita</span>
+    </button>
+  </div>
 </div>
     </div>
   </div>
@@ -1329,6 +1392,7 @@
     const infoModalPanel = infoModal ? infoModal.querySelector('.info-modal-panel') : null;
     const infoModalContent = infoModal ? infoModal.querySelector('.info-modal-content') : null;
     const closeInfoModalBtn = document.getElementById('closeInfoModal');
+    const startVisitBtn = document.getElementById('startVisitBtn');
     const originalSlides = Array.from(slidesTrack.querySelectorAll('.slide'));
     const totalSlides = originalSlides.length;
 
@@ -1679,6 +1743,10 @@
 
     if (closeInfoModalBtn) {
       closeInfoModalBtn.addEventListener('click', closeInfoModal);
+    }
+
+    if (startVisitBtn) {
+      startVisitBtn.addEventListener('click', closeInfoModal);
     }
 
     if (infoModal) {
