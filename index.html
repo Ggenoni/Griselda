@@ -523,7 +523,7 @@
       inset: 0;
       z-index: 2000;
       background: rgba(255,255,255,0.16);
-      padding: clamp(1rem, 0.4rem + 2vw, 2.5rem);
+      padding: clamp(1.5rem, 0.8rem + 3vw, 3.5rem);
       justify-content: center;
       align-items: center;
       isolation: isolate;
@@ -544,8 +544,8 @@
     .info-modal-panel {
       position: relative;
       width: min(100%, 1200px);
-      max-width: calc(100vw - clamp(2rem, 1rem + 4vw, 5rem));
-      max-height: calc(100svh - clamp(2rem, 1rem + 4vw, 5rem));
+      max-width: calc(100vw - clamp(3rem, 1.5rem + 5vw, 7rem));
+      max-height: calc(100svh - clamp(3rem, 1.5rem + 5vw, 7rem));
       overflow: auto;
       padding: clamp(1.4rem, 1rem + 1.5vw, 2.4rem);
       border-radius: 18px;
@@ -1014,7 +1014,7 @@
     .site-shell.is-phone-device .page-end-spacer { height: 9vh; }
 
     html.phone-force-landscape .info-modal {
-      padding: 0.75rem;
+      padding: 1.25rem;
       justify-content: flex-start;
       align-items: flex-start;
       overflow: hidden;
@@ -1022,12 +1022,12 @@
 
     html.phone-force-landscape .info-modal-panel {
   position: relative;
-  width: calc(var(--phone-landscape-width) - 1.5rem);
-  min-width: calc(var(--phone-landscape-width) - 1.5rem);
-  max-width: calc(var(--phone-landscape-width) - 1.5rem);
-  height: calc(var(--phone-landscape-height) - 1.5rem);
-  min-height: calc(var(--phone-landscape-height) - 1.5rem);
-  max-height: calc(var(--phone-landscape-height) - 1.5rem);
+  width: calc(var(--phone-landscape-width) - 2.5rem);
+min-width: calc(var(--phone-landscape-width) - 2.5rem);
+max-width: calc(var(--phone-landscape-width) - 2.5rem);
+height: calc(var(--phone-landscape-height) - 2.5rem);
+min-height: calc(var(--phone-landscape-height) - 2.5rem);
+max-height: calc(var(--phone-landscape-height) - 2.5rem);
   margin: 0;
   padding: 1.15rem 1rem 1.25rem;
   border-radius: 14px;
