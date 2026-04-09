@@ -42,10 +42,15 @@
       line-height: 1.7;
       text-rendering: optimizeLegibility;
       -webkit-font-smoothing: antialiased;
+    }
+
+    .site-shell {
+      position: relative;
       display: grid;
       grid-template-columns: minmax(0, 1.15fr) minmax(360px, 0.85fr);
       height: 100svh;
       overflow: hidden;
+      isolation: isolate;
     }
 
     img {
@@ -516,11 +521,14 @@
       display: none;
       position: fixed;
       inset: 0;
-      z-index: 950;
-      background: rgba(255,255,255,0.08);
+      z-index: 2000;
+      background: rgba(255,255,255,0.16);
       padding: clamp(1rem, 0.4rem + 2vw, 2.5rem);
       justify-content: center;
       align-items: center;
+      isolation: isolate;
+      overscroll-behavior: contain;
+      touch-action: none;
     }
 
     .info-modal[aria-hidden="false"] {
@@ -528,9 +536,9 @@
     }
 
     .info-modal {
-      background: rgba(255, 255, 255, 0.04);
-      backdrop-filter: blur(0.4px);
-      -webkit-backdrop-filter: blur(0.4px);
+      background: rgba(255,255,255,0.18);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
     }
 
     .info-modal-panel {
@@ -541,7 +549,7 @@
       overflow: auto;
       padding: clamp(1.4rem, 1rem + 1.5vw, 2.4rem);
       border-radius: 18px;
-      background: rgba(255,255,255,0.96);
+      background: rgba(255,255,255,0.98);
       color: var(--text);
       box-shadow:
         0 0 0 1px rgba(0,0,0,0.22),
@@ -550,6 +558,10 @@
       backdrop-filter: blur(4px);
       -webkit-backdrop-filter: blur(4px);
       border: 1px solid rgba(0,0,0,0.08);
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-y;
+      transform: translateZ(0);
     }
 
     .info-modal-close {
@@ -595,12 +607,24 @@
       color: var(--muted);
     }
 
+    html.info-modal-open-root,
     body.info-modal-open {
       overflow: hidden;
+      overscroll-behavior: none;
+    }
+
+    body.info-modal-open .site-shell {
+      pointer-events: none;
+      user-select: none;
+    }
+
+    body.info-modal-open #infoModal,
+    body.info-modal-open #infoModal * {
+      pointer-events: auto;
     }
 
     @media (max-width: 1200px) {
-      body {
+      .site-shell {
         grid-template-columns: minmax(0, 1fr) minmax(340px, 0.94fr);
       }
 
@@ -614,7 +638,7 @@
     }
 
     @media (max-width: 900px) and (orientation: portrait) {
-      body {
+      .site-shell {
         display: block;
         height: auto;
         overflow-x: hidden;
@@ -731,7 +755,7 @@
     }
 
     @media (max-width: 900px) and (orientation: landscape) {
-      body {
+      .site-shell {
         display: grid;
         grid-template-columns: minmax(0, 1.02fr) minmax(300px, 0.98fr);
         height: 100svh;
@@ -831,7 +855,7 @@
       overscroll-behavior: none;
     }
 
-    body.is-phone-device {
+    .site-shell.is-phone-device {
       position: fixed;
       inset: 0;
       display: grid;
@@ -849,7 +873,7 @@
       -webkit-text-size-adjust: 100%;
     }
 
-    body.is-phone-device .left-panel {
+    .site-shell.is-phone-device .left-panel {
       position: sticky;
       top: 0;
       height: var(--phone-landscape-height);
@@ -857,28 +881,28 @@
       border-bottom: none;
     }
 
-    body.is-phone-device .meta {
+    .site-shell.is-phone-device .meta {
       padding: 0.8rem 1rem 0.75rem;
     }
 
-    body.is-phone-device .meta-top { gap: 0.55rem; }
-    body.is-phone-device .meta-subtitle,
-    body.is-phone-device .meta-project { font-size: 0.6rem; }
-    body.is-phone-device .meta h1 { font-size: 0.92rem; }
-    body.is-phone-device .meta-title-inline { font-size: 0.86em; }
-    body.is-phone-device .rotate-hint { display: none; }
+    .site-shell.is-phone-device .meta-top { gap: 0.55rem; }
+    .site-shell.is-phone-device .meta-subtitle,
+    .site-shell.is-phone-device .meta-project { font-size: 0.6rem; }
+    .site-shell.is-phone-device .meta h1 { font-size: 0.92rem; }
+    .site-shell.is-phone-device .meta-title-inline { font-size: 0.86em; }
+    .site-shell.is-phone-device .rotate-hint { display: none; }
 
-    body.is-phone-device .slide {
+    .site-shell.is-phone-device .slide {
       padding: 2.75rem 0.7rem 2.65rem;
       gap: 0.45rem;
     }
 
-    body.is-phone-device .slide-title {
+    .site-shell.is-phone-device .slide-title {
       top: 0.58rem;
       font-size: 0.98rem;
     }
 
-    body.is-phone-device .img-number {
+    .site-shell.is-phone-device .img-number {
       top: 4px;
       left: 4px;
       min-width: 1.22rem;
@@ -888,11 +912,11 @@
       line-height: 1;
     }
 
-    body.is-phone-device .img-number.active-number {
+    .site-shell.is-phone-device .img-number.active-number {
       transform: none;
     }
 
-    body.is-phone-device .img-wrapper.compact-badge .img-number {
+    .site-shell.is-phone-device .img-wrapper.compact-badge .img-number {
       top: 3px;
       left: 3px;
       min-width: 1.08rem;
@@ -902,83 +926,83 @@
       letter-spacing: -0.01em;
     }
 
-    body.is-phone-device .arrow {
+    .site-shell.is-phone-device .arrow {
       display: none !important;
     }
 
-    body.is-phone-device .slideshow-dots {
+    .site-shell.is-phone-device .slideshow-dots {
       bottom: 0.55rem;
       gap: 0.38rem;
       padding: 0.28rem 0.48rem;
     }
 
-    body.is-phone-device .slideshow-dot {
+    .site-shell.is-phone-device .slideshow-dot {
       width: 0.5rem;
       height: 0.5rem;
     }
 
-    body.is-phone-device .right-panel {
+    .site-shell.is-phone-device .right-panel {
       height: var(--phone-landscape-height);
       overflow-y: auto;
       padding: 1rem 1rem 24vh;
     }
 
-    body.is-phone-device .text-flow { max-width: 60ch; }
+    .site-shell.is-phone-device .text-flow { max-width: 60ch; }
 
-    body.is-phone-device .text-section {
+    .site-shell.is-phone-device .text-section {
       margin-bottom: 1.25rem;
       padding-top: 1rem;
       padding-bottom: 0.8rem;
     }
 
-    body.is-phone-device .text-section p {
+    .site-shell.is-phone-device .text-section p {
       font-size: 0.99rem;
       line-height: 1.68;
     }
 
-    body.is-phone-device .icon-number { font-size: 0.86rem; }
-    body.is-phone-device .end-image-section {
+    .site-shell.is-phone-device .icon-number { font-size: 0.86rem; }
+    .site-shell.is-phone-device .end-image-section {
       min-height: calc(30vh - 1rem);
       padding-bottom: 0.9rem;
     }
-    body.is-phone-device .end-image-figure {
+    .site-shell.is-phone-device .end-image-figure {
       width: min(100%, 320px);
     }
-    body.is-phone-device .page-end-spacer { height: 9vh; }
+    .site-shell.is-phone-device .page-end-spacer { height: 9vh; }
 
-    body.is-phone-device .info-modal {
+    html.phone-force-landscape .info-modal {
       padding: 1rem;
     }
 
-    body.is-phone-device .info-modal-panel {
+    html.phone-force-landscape .info-modal-panel {
       width: min(100%, 1200px);
-      max-width: min(calc(var(--phone-landscape-width) - 2rem), 1200px);
-      max-height: calc(var(--phone-landscape-height) - 2rem);
+      max-width: calc(100vw - 2rem);
+      max-height: calc(100svh - 2rem);
       padding: 1.15rem 1rem 1.25rem;
       border-radius: 14px;
     }
 
-    body.is-phone-device .info-modal-close {
+    html.phone-force-landscape .info-modal-close {
       width: 2.15rem;
       height: 2.15rem;
       font-size: 1.35rem;
     }
 
-    body.is-phone-device.is-portrait-phone {
+    .site-shell.is-phone-device.is-portrait-phone {
       transform: rotate(90deg) translateY(calc(-1 * var(--phone-landscape-height)));
     }
 
-    body.is-phone-device input[type="search"],
-    body.is-phone-device [role="search"],
-    body.is-phone-device .search-bar,
-    body.is-phone-device .searchbox,
-    body.is-phone-device .search-box,
-    body.is-phone-device .search-field,
-    body.is-phone-device .search-input,
-    body.is-phone-device .site-search,
-    body.is-phone-device .mobile-search,
-    body.is-phone-device [id*="search" i],
-    body.is-phone-device [class*="search" i] {
+    .site-shell.is-phone-device input[type="search"],
+    .site-shell.is-phone-device [role="search"],
+    .site-shell.is-phone-device .search-bar,
+    .site-shell.is-phone-device .searchbox,
+    .site-shell.is-phone-device .search-box,
+    .site-shell.is-phone-device .search-field,
+    .site-shell.is-phone-device .search-input,
+    .site-shell.is-phone-device .site-search,
+    .site-shell.is-phone-device .mobile-search,
+    .site-shell.is-phone-device [id*="search" i],
+    .site-shell.is-phone-device [class*="search" i] {
       display: none !important;
       visibility: hidden !important;
       pointer-events: none !important;
@@ -992,7 +1016,8 @@
   </style>
 </head>
 <body>
-  <aside class="left-panel">
+  <div class="site-shell" id="appShell">
+    <aside class="left-panel">
     <div class="meta">
       <div class="meta-top">
         <span class="meta-subtitle">CASTELLO SFORZESCO, MILANO</span>
@@ -1227,6 +1252,7 @@
       <div class="page-end-spacer" aria-hidden="true"></div>
     </div>
   </main>
+  </div>
 
   <div id="lightbox" class="lightbox" aria-hidden="true">
     <span class="close-lightbox" aria-label="Chiudi immagine">&times;</span>
@@ -1263,7 +1289,7 @@
   &#8594; <strong>Cliccate su una scena</strong> per raggiungere il rispettivo passo del testo.<br>
   &#8594; <strong>Fate doppio clic su una scena</strong> per ingrandirla e osservarne dettagli, personaggi e ambienti.
 </p>
-<p><strong>NB:</strong> per una fruizione ottimale su cellulare, è necessario abilitare la <strong>rotazione automatica dello schermo</strong>.</p>
+<p><strong>NB:</strong> la pagina è pensata per la visualizzazione orizzontale. Per una fruizione ottimale su cellulare, è necessario abilitare la <strong>rotazione automatica dello schermo</strong>.</p>
 <br>
   <p class="info-modal-label">Fonti</p>
   <ul>
@@ -1293,6 +1319,7 @@
   </div>
 
   <script>
+    const appShell = document.getElementById('appShell');
     const slidesTrack = document.getElementById('slides');
     const textPanel = document.getElementById('textPanel');
     const leftPanel = document.querySelector('.left-panel');
@@ -1316,7 +1343,7 @@
     const stackedLayoutBreakpoint = window.matchMedia('(max-width: 900px) and (orientation: portrait)');
 
     function isStackedLayout() {
-      return stackedLayoutBreakpoint.matches && !document.body.classList.contains('is-phone-device');
+      return stackedLayoutBreakpoint.matches && !appShell?.classList.contains('is-phone-device');
     }
 
     function isPhoneSizedDevice() {
@@ -1344,8 +1371,10 @@
       const isPortrait = window.matchMedia('(orientation: portrait)').matches;
 
       updatePhoneViewportVars();
-      document.body.classList.toggle('is-phone-device', isPhone);
-      document.body.classList.toggle('is-portrait-phone', isPhone && isPortrait);
+      if (appShell) {
+        appShell.classList.toggle('is-phone-device', isPhone);
+        appShell.classList.toggle('is-portrait-phone', isPhone && isPortrait);
+      }
       document.documentElement.classList.toggle('phone-force-landscape', isPhone);
 
       if (isPhone && screen.orientation && typeof screen.orientation.lock === 'function') {
@@ -1625,6 +1654,8 @@
       if (!infoModal) return;
       infoModal.setAttribute('aria-hidden', 'false');
       document.body.classList.add('info-modal-open');
+      document.documentElement.classList.add('info-modal-open-root');
+      if (appShell) appShell.inert = true;
       resetInfoModalScroll();
       window.requestAnimationFrame(() => {
         resetInfoModalScroll();
@@ -1635,6 +1666,8 @@
       if (!infoModal) return;
       infoModal.setAttribute('aria-hidden', 'true');
       document.body.classList.remove('info-modal-open');
+      document.documentElement.classList.remove('info-modal-open-root');
+      if (appShell) appShell.inert = false;
     }
 
     if (projectLink) {
