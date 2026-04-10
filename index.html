@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Le Storie di Griselda</title>
+  <title>La Sala di Griselda</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Droid+Serif:wght@400;700&family=Inter:wght@400;500;600;700&family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
@@ -89,75 +89,77 @@
     .meta-top {
       display: flex;
       align-items: center;
+      justify-content: space-between;
       gap: 0.75rem;
+      min-width: 0;
     }
 
     .meta-branding {
-  --meta-logo-height: clamp(1.55rem, 1.2rem + 0.7vw, 1.95rem);
-  display: flex;
-  align-items: center;
-  gap: clamp(0.35rem, 0.2rem + 0.4vw, 0.6rem);
-  flex: 1 1 auto;
-  min-width: 0;
-  max-width: 100%;
-  flex-wrap: nowrap;
-  overflow: hidden;
-  margin-top: -0.14rem;
-}
+      --meta-logo-height: clamp(1.25rem, 1.05rem + 0.45vw, 1.55rem);
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: clamp(0.28rem, 0.18rem + 0.3vw, 0.5rem);
+      flex: 0 1 auto;
+      min-width: 0;
+      max-width: 100%;
+      flex-wrap: nowrap;
+      white-space: nowrap;
+      overflow: hidden;
+      margin-top: 0;
+    }
 
-.meta-logo-link {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
-  flex: 1 1 0;
-  min-width: 0;
-  max-width: 100%;
-  overflow: hidden;
-  transition: transform 0.2s ease, opacity 0.2s ease;
-  padding: 0;
-  border: 0;
-  background: transparent;
-}
+    .meta-logo-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-start;
+      text-decoration: none;
+      flex: 0 0 auto;
+      min-width: 0;
+      max-width: none;
+      overflow: hidden;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+      padding: 0;
+      border: 0;
+      background: transparent;
+    }
 
-.meta-logo-link:hover,
-.meta-logo-link:focus-visible {
-  transform: translateY(-1px);
-  opacity: 0.92;
-  outline: none;
-}
+    .meta-logo-link:hover,
+    .meta-logo-link:focus-visible {
+      transform: translateY(-1px);
+      opacity: 0.92;
+      outline: none;
+    }
 
-.meta-logo-link img {
-  display: block;
-  height: var(--meta-logo-height);
-  width: auto;
-  max-width: 100%;
-  object-fit: contain;
-}
+    .meta-logo-link img {
+      display: block;
+      height: var(--meta-logo-height);
+      width: auto;
+      max-width: none;
+      object-fit: contain;
+      object-position: left center;
+    }
 
-/* Medioevo / UniMi: no container, only rounded image */
-.meta-logo-link.is-unimi {
-  background: transparent;
-  border: 0;
-  border-radius: 0;
-  padding: 0;
-}
+    .meta-logo-link.is-unimi {
+      background: transparent;
+      border: 0;
+      border-radius: 0;
+      padding: 0;
+    }
 
-.meta-logo-link.is-unimi img {
-  border-radius: 0.4rem;
-}
+    .meta-logo-link.is-unimi img {
+      border-radius: 0.35rem;
+    }
 
-/* Castello: keep its background if desired, but no extra height */
-.meta-logo-link.is-castello {
-  background: #7b2d2f;
-  border-radius: 0.4rem;
-  padding: 0;
-  flex: 1 1 0;
-}
+    .meta-logo-link.is-castello {
+      background: #7b2d2f;
+      border-radius: 0.35rem;
+      padding: 0;
+    }
 
-.meta-logo-link.is-castello img {
-  border-radius: 0.4rem;
-}
+    .meta-logo-link.is-castello img {
+      border-radius: 0.35rem;
+    }
 
     .meta-subtitle {
       display: block;
@@ -172,6 +174,7 @@
 
     .meta-project {
       margin-left: auto;
+      flex: 0 0 auto;
       font-family: var(--font-ui);
       font-size: 0.76rem;
       line-height: 1.2;
@@ -740,20 +743,18 @@
         border-bottom: 1px solid var(--line);
       }
 
-      .meta { padding: 0.55rem 0.9rem 0.5rem; }
-      .meta-top { gap: 0.45rem; }
+      .meta { padding: 0.48rem 0.78rem 0.44rem; }
+      .meta-top { gap: 0.42rem; }
       .meta-branding {
-  --meta-logo-height: 1.2rem;
-  gap: 0.3rem;
-  margin-top: -0.08rem;
-}
-
-.meta-logo-link.is-unimi,
-.meta-logo-link.is-castello {
-  padding: 0;
-}
+        --meta-logo-height: 1.02rem;
+        gap: 0.24rem;
+      }
+      .meta-logo-link.is-unimi,
+      .meta-logo-link.is-castello {
+        padding: 0;
+      }
       .meta-logo-link img {
-        max-width: 100%;
+        max-width: none;
       }
       .meta-project { font-size: 0.62rem; }
       .meta h1 { font-size: 0.94rem; }
@@ -859,21 +860,20 @@
       }
 
       .meta {
-        padding: 0.52rem 0.9rem 0.48rem;
+        padding: 0.48rem 0.82rem 0.44rem;
       }
 
       .meta-top { gap: 0.42rem; }
       .meta-branding {
-        --meta-logo-height: 1.22rem;
-        gap: 0.3rem;
-        margin-top: -0.08rem;
+        --meta-logo-height: 1.06rem;
+        gap: 0.24rem;
       }
       .meta-logo-link.is-unimi,
       .meta-logo-link.is-castello {
-        padding: 0.16rem 0.28rem;
+        padding: 0;
       }
       .meta-logo-link img {
-        max-width: 100%;
+        max-width: none;
       }
       .meta-project { font-size: 0.6rem; }
       .meta h1 { font-size: 0.92rem; }
@@ -970,21 +970,20 @@
     }
 
     .site-shell.is-phone-device .meta {
-      padding: 0.52rem 0.9rem 0.48rem;
+      padding: 0.48rem 0.82rem 0.44rem;
     }
 
     .site-shell.is-phone-device .meta-top { gap: 0.42rem; }
     .site-shell.is-phone-device .meta-branding {
-      --meta-logo-height: 1.22rem;
-      gap: 0.3rem;
-      margin-top: -0.08rem;
+      --meta-logo-height: 1.06rem;
+      gap: 0.24rem;
     }
     .site-shell.is-phone-device .meta-logo-link.is-unimi,
     .site-shell.is-phone-device .meta-logo-link.is-castello {
-      padding: 0.16rem 0.28rem;
+      padding: 0;
     }
     .site-shell.is-phone-device .meta-logo-link img {
-      max-width: 100%;
+      max-width: none;
     }
     .site-shell.is-phone-device .meta-project { font-size: 0.6rem; }
     .site-shell.is-phone-device .meta h1 { font-size: 0.92rem; }
@@ -1151,7 +1150,7 @@ max-height: calc(var(--phone-landscape-height) - 2.5rem);
         </div>
         <a class="meta-project" id="projectLink" href="#">INFO</a>
       </div>
-      <h1>Le Storie di Griselda<span class="meta-title-inline-separator"> - </span><span class="meta-title-inline"><em>Decameron</em>, X 10</span></h1>
+      <h1>La Sala di Griselda<span class="meta-title-inline-separator"> - </span><span class="meta-title-inline"><em>Decameron</em>, X 10</span></h1>
       <p class="rotate-hint">Su telefono, l’orientamento orizzontale rende più chiaro il rapporto tra immagini e testo.</p>
     </div>
 
@@ -1383,7 +1382,7 @@ max-height: calc(var(--phone-landscape-height) - 2.5rem);
       <button class="info-modal-close" id="closeInfoModal" aria-label="Chiudi informazioni">&times;</button>
       <div class="info-modal-content">
   <p id="infoModalTitle">
-    Benvenuti alle Storie di Griselda.
+    Benvenuti alla Sala di Griselda.
   </p>
 
   <p>
