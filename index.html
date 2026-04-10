@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>La Sala di Griselda</title>
+  <title>Le Storie di Griselda</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Droid+Serif:wght@400;700&family=Inter:wght@400;500;600;700&family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
@@ -77,7 +77,7 @@
 
     .meta {
       flex: 0 0 auto;
-      padding: 1rem 1.5rem 0.9rem;
+      padding: 0.72rem 1.5rem 0.6rem;
       background: rgba(255,255,255,0.95);
       border-bottom: 1px solid var(--soft-line);
       backdrop-filter: blur(10px);
@@ -88,9 +88,76 @@
 
     .meta-top {
       display: flex;
-      align-items: baseline;
-      gap: 0.9rem;
+      align-items: center;
+      gap: 0.75rem;
     }
+
+    .meta-branding {
+  --meta-logo-height: clamp(1.55rem, 1.2rem + 0.7vw, 1.95rem);
+  display: flex;
+  align-items: center;
+  gap: clamp(0.35rem, 0.2rem + 0.4vw, 0.6rem);
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 100%;
+  flex-wrap: nowrap;
+  overflow: hidden;
+  margin-top: -0.14rem;
+}
+
+.meta-logo-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.meta-logo-link:hover,
+.meta-logo-link:focus-visible {
+  transform: translateY(-1px);
+  opacity: 0.92;
+  outline: none;
+}
+
+.meta-logo-link img {
+  display: block;
+  height: var(--meta-logo-height);
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+/* Medioevo / UniMi: no container, only rounded image */
+.meta-logo-link.is-unimi {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+}
+
+.meta-logo-link.is-unimi img {
+  border-radius: 0.4rem;
+}
+
+/* Castello: keep its background if desired, but no extra height */
+.meta-logo-link.is-castello {
+  background: #7b2d2f;
+  border-radius: 0.4rem;
+  padding: 0;
+  flex: 1 1 0;
+}
+
+.meta-logo-link.is-castello img {
+  border-radius: 0.4rem;
+}
 
     .meta-subtitle {
       display: block;
@@ -330,6 +397,12 @@
       margin: 0 auto;
     }
 
+    .text-flow::after {
+      content: "";
+      display: block;
+      height: clamp(18rem, 45vh, 32rem);
+    }
+
     .text-section {
       margin: 0 0 1.6rem;
       padding: 1.25rem 0 0.95rem;
@@ -404,38 +477,6 @@
       font-weight: 600;
       line-height: 1;
       color: var(--muted);
-    }
-
-    .end-image-section {
-      min-height: calc(100svh - 15rem);
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
-      padding: 1.8rem 0 1.45rem;
-    }
-
-    .end-image-figure {
-      width: min(100%, 440px);
-      margin: 0;
-    }
-
-    .end-image-figure img {
-      width: 100%;
-      height: auto;
-      border: 1px solid rgba(0,0,0,0.08);
-      box-shadow: var(--shadow);
-    }
-
-    .end-image-link {
-      display: block;
-    }
-
-    .end-image-link img {
-      cursor: pointer;
-    }
-
-    .page-end-spacer {
-      height: 10vh;
     }
 
     .lightbox {
@@ -589,6 +630,7 @@
       line-height: 1.8;
     }
 
+
     .info-modal-content p {
       margin: 0 0 1rem;
     }
@@ -698,9 +740,21 @@
         border-bottom: 1px solid var(--line);
       }
 
-      .meta { padding: 0.85rem 1rem 0.8rem; }
-      .meta-top { gap: 0.6rem; }
-      .meta-subtitle,
+      .meta { padding: 0.55rem 0.9rem 0.5rem; }
+      .meta-top { gap: 0.45rem; }
+      .meta-branding {
+  --meta-logo-height: 1.2rem;
+  gap: 0.3rem;
+  margin-top: -0.08rem;
+}
+
+.meta-logo-link.is-unimi,
+.meta-logo-link.is-castello {
+  padding: 0;
+}
+      .meta-logo-link img {
+        max-width: 100%;
+      }
       .meta-project { font-size: 0.62rem; }
       .meta h1 { font-size: 0.94rem; }
       .meta-title-inline { font-size: 0.88em; }
@@ -759,16 +813,6 @@
       }
 
       .icon-number { font-size: 0.86rem; }
-      .end-image-section {
-        min-height: calc(42vh - 2rem);
-        padding-bottom: 0.95rem;
-      }
-
-      .end-image-figure {
-        width: min(100%, 360px);
-      }
-
-      .page-end-spacer { height: 12vh; }
 
       .lightbox { padding: 1rem; }
       .lightbox-img-wrapper {
@@ -789,6 +833,7 @@
         padding: 1.15rem 1rem 1.25rem;
         border-radius: 14px;
       }
+
 
       .info-modal-close {
         width: 2.15rem;
@@ -814,11 +859,22 @@
       }
 
       .meta {
-        padding: 0.8rem 1rem 0.75rem;
+        padding: 0.52rem 0.9rem 0.48rem;
       }
 
-      .meta-top { gap: 0.55rem; }
-      .meta-subtitle,
+      .meta-top { gap: 0.42rem; }
+      .meta-branding {
+        --meta-logo-height: 1.22rem;
+        gap: 0.3rem;
+        margin-top: -0.08rem;
+      }
+      .meta-logo-link.is-unimi,
+      .meta-logo-link.is-castello {
+        padding: 0.16rem 0.28rem;
+      }
+      .meta-logo-link img {
+        max-width: 100%;
+      }
       .meta-project { font-size: 0.6rem; }
       .meta h1 { font-size: 0.92rem; }
       .meta-title-inline { font-size: 0.86em; }
@@ -877,17 +933,6 @@
         font-size: 0.99rem;
         line-height: 1.68;
       }
-
-      .end-image-section {
-        min-height: calc(30vh - 1rem);
-        padding-bottom: 0.9rem;
-      }
-
-      .end-image-figure {
-        width: min(100%, 320px);
-      }
-
-      .page-end-spacer { height: 9vh; }
     }
 
     html.phone-force-landscape,
@@ -925,11 +970,22 @@
     }
 
     .site-shell.is-phone-device .meta {
-      padding: 0.8rem 1rem 0.75rem;
+      padding: 0.52rem 0.9rem 0.48rem;
     }
 
-    .site-shell.is-phone-device .meta-top { gap: 0.55rem; }
-    .site-shell.is-phone-device .meta-subtitle,
+    .site-shell.is-phone-device .meta-top { gap: 0.42rem; }
+    .site-shell.is-phone-device .meta-branding {
+      --meta-logo-height: 1.22rem;
+      gap: 0.3rem;
+      margin-top: -0.08rem;
+    }
+    .site-shell.is-phone-device .meta-logo-link.is-unimi,
+    .site-shell.is-phone-device .meta-logo-link.is-castello {
+      padding: 0.16rem 0.28rem;
+    }
+    .site-shell.is-phone-device .meta-logo-link img {
+      max-width: 100%;
+    }
     .site-shell.is-phone-device .meta-project { font-size: 0.6rem; }
     .site-shell.is-phone-device .meta h1 { font-size: 0.92rem; }
     .site-shell.is-phone-device .meta-title-inline { font-size: 0.86em; }
@@ -1004,14 +1060,6 @@
     }
 
     .site-shell.is-phone-device .icon-number { font-size: 0.86rem; }
-    .site-shell.is-phone-device .end-image-section {
-      min-height: calc(30vh - 1rem);
-      padding-bottom: 0.9rem;
-    }
-    .site-shell.is-phone-device .end-image-figure {
-      width: min(100%, 320px);
-    }
-    .site-shell.is-phone-device .page-end-spacer { height: 9vh; }
 
     html.phone-force-landscape .info-modal {
       padding: 1.25rem;
@@ -1081,10 +1129,29 @@ max-height: calc(var(--phone-landscape-height) - 2.5rem);
     <aside class="left-panel">
     <div class="meta">
       <div class="meta-top">
-        <span class="meta-subtitle">CASTELLO SFORZESCO, MILANO</span>
+        <div class="meta-branding" aria-label="Partner del progetto">
+          <a
+            class="meta-logo-link is-castello"
+            href="https://www.milanocastello.it/it/home"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Apri il sito del Castello Sforzesco"
+          >
+            <img src="https://www-cdn.comune.milano.it/image/layout_set_logo?img_id=500613581&t=1775820919856" alt="Logo Castello Sforzesco" loading="lazy" />
+          </a>
+          <a
+            class="meta-logo-link is-unimi"
+            href="https://sites.unimi.it/medioevoinstatale/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Apri il sito Il Medioevo di UniMi"
+          >
+            <img src="https://sites.unimi.it/medioevoinstatale/testa1.jpg" alt="Logo Il Medioevo di UniMi" loading="lazy" />
+          </a>
+        </div>
         <a class="meta-project" id="projectLink" href="#">INFO</a>
       </div>
-      <h1>La Sala di Griselda<span class="meta-title-inline-separator"> - </span><span class="meta-title-inline"><em>Decameron</em>, X 10</span></h1>
+      <h1>Le Storie di Griselda<span class="meta-title-inline-separator"> - </span><span class="meta-title-inline"><em>Decameron</em>, X 10</span></h1>
       <p class="rotate-hint">Su telefono, l’orientamento orizzontale rende più chiaro il rapporto tra immagini e testo.</p>
     </div>
 
@@ -1297,20 +1364,6 @@ max-height: calc(var(--phone-landscape-height) - 2.5rem);
       <section class="text-section" id="text-23"><div class="image-label"><span class="icon-number">23</span></div><p>Il conte da Panago si tornò dopo alquanti dì a Bologna, e Gualtieri, tolto Giannucolo dal suo lavorìo, come suocero il pose in istato che egli onoratamente e con gran consolazione visse e finì la sua vecchiezza.</p></section>
       <section class="text-section" id="text-24"><div class="image-label"><span class="icon-number">24</span></div><p>Ed egli appresso, maritata altamente la sua figliuola, con Griselda, onorandola sempre quanto più si potea, lungamente e consolato visse.</p></section>
       <section class="text-section" id="text-moral"><p>Che si potrà dir qui, se non che anche nelle povere case piovono dal cielo de’ divini spiriti, come nelle reali di quegli che sarien più degni di guardar porci che d’avere sopra uomini signoria? Chi avrebbe altri che Griselda potuto col viso non solamente asciutto ma lieto sofferir le rigide e mai più non udite pruove da Gualtier fatte? Al quale non sarebbe forse stato male investito d’essersi abbattuto ad una che, quando fuor di casa l’avesse in camiscia cacciata, s’avesse sì ad uno altro fatto scuotere il pilliccione, che riuscito ne fosse una bella roba.</p></section>
-      <section class="end-image-section" aria-label="Immagine conclusiva">
-        <figure class="end-image-figure">
-          <a
-            class="end-image-link"
-            href="https://sites.unimi.it/medioevoinstatale/"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Apri il sito Il Medioevo di UniMi"
-          >
-            <img src="https://sites.unimi.it/medioevoinstatale/testa1.jpg" alt="Dettaglio conclusivo" loading="lazy" />
-          </a>
-        </figure>
-      </section>
-      <div class="page-end-spacer" aria-hidden="true"></div>
     </div>
   </main>
   </div>
@@ -1330,7 +1383,7 @@ max-height: calc(var(--phone-landscape-height) - 2.5rem);
       <button class="info-modal-close" id="closeInfoModal" aria-label="Chiudi informazioni">&times;</button>
       <div class="info-modal-content">
   <p id="infoModalTitle">
-    Benvenuti alla Sala di Griselda.
+    Benvenuti alle Storie di Griselda.
   </p>
 
   <p>
@@ -1360,8 +1413,8 @@ max-height: calc(var(--phone-landscape-height) - 2.5rem);
       <a href="https://it.wikisource.org/wiki/Decameron/Giornata_decima/Novella_decima" target="_blank" rel="noopener noreferrer">Wikisource</a>.
     </li>
     <li>
-      Le immagini delle Storie di Griselda sono pubblicate per gentile concessione della
-      <a href="https://www.enteboccaccio.it/s/ente-boccaccio/page/home" target="_blank" rel="noopener noreferrer">Fondazione Ente Nazionale Giovanni Boccaccio</a>.
+      Le immagini delle <a href="https://www.enteboccaccio.it/s/ente-boccaccio/item-set/2383" target="_blank" rel="noopener noreferrer">Storie di Griselda</a> sono pubblicate per gentile concessione del
+      <a href="https://www.milanocastello.it/" target="_blank" rel="noopener noreferrer">Castello Sforzesco</a>.
     </li>
   </ul>
 <br>
@@ -1606,7 +1659,7 @@ max-height: calc(var(--phone-landscape-height) - 2.5rem);
       const triggerLineY = getTriggerLineY();
       let activeSection = null;
 
-      for (const section of allTextSections) {
+      for (const section of numberedSections) {
         if (section.getBoundingClientRect().top <= triggerLineY + 1) {
           activeSection = section;
         } else {
@@ -1664,13 +1717,7 @@ max-height: calc(var(--phone-landscape-height) - 2.5rem);
 
       const activeSection = findActiveSectionByTrigger();
       if (activeSection) {
-        const hasMappedImage = !!getOriginalImageByTarget(activeSection.id);
-        if (hasMappedImage) {
-          activateSection(activeSection.id);
-        } else if (currentActiveTargetId !== null) {
-          currentActiveTargetId = null;
-          clearActiveState();
-        }
+        activateSection(activeSection.id);
       } else {
         if (currentActiveTargetId !== null) {
           currentActiveTargetId = null;
