@@ -77,7 +77,7 @@
 
     .meta {
       flex: 0 0 auto;
-      padding: 0.72rem 1.5rem 0.6rem;
+      padding: 1rem 1.5rem 0.9rem;
       background: rgba(255,255,255,0.95);
       border-bottom: 1px solid var(--soft-line);
       backdrop-filter: blur(10px);
@@ -88,77 +88,8 @@
 
     .meta-top {
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.75rem;
-      min-width: 0;
-    }
-
-    .meta-branding {
-      --meta-logo-height: clamp(1.25rem, 1.05rem + 0.45vw, 1.55rem);
-      display: inline-flex;
-      align-items: center;
-      justify-content: flex-start;
-      gap: clamp(0.28rem, 0.18rem + 0.3vw, 0.5rem);
-      flex: 0 1 auto;
-      min-width: 0;
-      max-width: 100%;
-      flex-wrap: nowrap;
-      white-space: nowrap;
-      overflow: hidden;
-      margin-top: 0;
-    }
-
-    .meta-logo-link {
-      display: inline-flex;
-      align-items: center;
-      justify-content: flex-start;
-      text-decoration: none;
-      flex: 0 0 auto;
-      min-width: 0;
-      max-width: none;
-      overflow: hidden;
-      transition: transform 0.2s ease, opacity 0.2s ease;
-      padding: 0;
-      border: 0;
-      background: transparent;
-    }
-
-    .meta-logo-link:hover,
-    .meta-logo-link:focus-visible {
-      transform: translateY(-1px);
-      opacity: 0.92;
-      outline: none;
-    }
-
-    .meta-logo-link img {
-      display: block;
-      height: var(--meta-logo-height);
-      width: auto;
-      max-width: none;
-      object-fit: contain;
-      object-position: left center;
-    }
-
-    .meta-logo-link.is-unimi {
-      background: transparent;
-      border: 0;
-      border-radius: 0;
-      padding: 0;
-    }
-
-    .meta-logo-link.is-unimi img {
-      border-radius: 0.35rem;
-    }
-
-    .meta-logo-link.is-castello {
-      background: #7b2d2f;
-      border-radius: 0.35rem;
-      padding: 0;
-    }
-
-    .meta-logo-link.is-castello img {
-      border-radius: 0.35rem;
+      align-items: baseline;
+      gap: 0.9rem;
     }
 
     .meta-subtitle {
@@ -174,7 +105,6 @@
 
     .meta-project {
       margin-left: auto;
-      flex: 0 0 auto;
       font-family: var(--font-ui);
       font-size: 0.76rem;
       line-height: 1.2;
@@ -400,12 +330,6 @@
       margin: 0 auto;
     }
 
-    .text-flow::after {
-      content: "";
-      display: block;
-      height: clamp(18rem, 45vh, 32rem);
-    }
-
     .text-section {
       margin: 0 0 1.6rem;
       padding: 1.25rem 0 0.95rem;
@@ -480,6 +404,77 @@
       font-weight: 600;
       line-height: 1;
       color: var(--muted);
+    }
+
+    .end-image-section {
+      min-height: calc(100svh - 15rem);
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 1.8rem 0 1.45rem;
+    }
+
+    .end-logo-stack {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      width: min(100%, 440px);
+    }
+
+    .end-image-figure {
+      width: 100%;
+      margin: 0;
+    }
+
+    .end-image-figure img {
+      width: 100%;
+      height: auto;
+      border: 1px solid rgba(0,0,0,0.08);
+      box-shadow: var(--shadow);
+    }
+
+    .end-image-link {
+      display: block;
+    }
+
+    .end-image-link img {
+      cursor: pointer;
+    }
+
+    .end-castello-link {
+      display: block;
+      max-width: 100%;
+    }
+
+    .end-castello-logo-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      max-width: 100%;
+      padding: 0.6rem 1rem;
+      background: #7b2d2f;
+      border: 1px solid rgba(0,0,0,0.08);
+      border-radius: 10px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .end-castello-logo-wrap img {
+      display: block;
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      border-radius: 0;
+      box-shadow: none;
+      border: 0;
+      object-fit: contain;
+      cursor: pointer;
+    }
+
+    .page-end-spacer {
+      height: 10vh;
     }
 
     .lightbox {
@@ -633,7 +628,6 @@
       line-height: 1.8;
     }
 
-
     .info-modal-content p {
       margin: 0 0 1rem;
     }
@@ -743,19 +737,9 @@
         border-bottom: 1px solid var(--line);
       }
 
-      .meta { padding: 0.48rem 0.78rem 0.44rem; }
-      .meta-top { gap: 0.42rem; }
-      .meta-branding {
-        --meta-logo-height: 1.02rem;
-        gap: 0.24rem;
-      }
-      .meta-logo-link.is-unimi,
-      .meta-logo-link.is-castello {
-        padding: 0;
-      }
-      .meta-logo-link img {
-        max-width: none;
-      }
+      .meta { padding: 0.85rem 1rem 0.8rem; }
+      .meta-top { gap: 0.6rem; }
+      .meta-subtitle,
       .meta-project { font-size: 0.62rem; }
       .meta h1 { font-size: 0.94rem; }
       .meta-title-inline { font-size: 0.88em; }
@@ -814,6 +798,16 @@
       }
 
       .icon-number { font-size: 0.86rem; }
+      .end-image-section {
+        min-height: calc(42vh - 2rem);
+        padding-bottom: 0.95rem;
+      }
+
+      .end-logo-stack {
+        width: min(100%, 360px);
+      }
+
+      .page-end-spacer { height: 12vh; }
 
       .lightbox { padding: 1rem; }
       .lightbox-img-wrapper {
@@ -834,7 +828,6 @@
         padding: 1.15rem 1rem 1.25rem;
         border-radius: 14px;
       }
-
 
       .info-modal-close {
         width: 2.15rem;
@@ -860,21 +853,11 @@
       }
 
       .meta {
-        padding: 0.48rem 0.82rem 0.44rem;
+        padding: 0.8rem 1rem 0.75rem;
       }
 
-      .meta-top { gap: 0.42rem; }
-      .meta-branding {
-        --meta-logo-height: 1.06rem;
-        gap: 0.24rem;
-      }
-      .meta-logo-link.is-unimi,
-      .meta-logo-link.is-castello {
-        padding: 0;
-      }
-      .meta-logo-link img {
-        max-width: none;
-      }
+      .meta-top { gap: 0.55rem; }
+      .meta-subtitle,
       .meta-project { font-size: 0.6rem; }
       .meta h1 { font-size: 0.92rem; }
       .meta-title-inline { font-size: 0.86em; }
@@ -933,6 +916,17 @@
         font-size: 0.99rem;
         line-height: 1.68;
       }
+
+      .end-image-section {
+        min-height: calc(30vh - 1rem);
+        padding-bottom: 0.9rem;
+      }
+
+      .end-logo-stack {
+        width: min(100%, 320px);
+      }
+
+      .page-end-spacer { height: 9vh; }
     }
 
     html.phone-force-landscape,
@@ -970,21 +964,11 @@
     }
 
     .site-shell.is-phone-device .meta {
-      padding: 0.48rem 0.82rem 0.44rem;
+      padding: 0.8rem 1rem 0.75rem;
     }
 
-    .site-shell.is-phone-device .meta-top { gap: 0.42rem; }
-    .site-shell.is-phone-device .meta-branding {
-      --meta-logo-height: 1.06rem;
-      gap: 0.24rem;
-    }
-    .site-shell.is-phone-device .meta-logo-link.is-unimi,
-    .site-shell.is-phone-device .meta-logo-link.is-castello {
-      padding: 0;
-    }
-    .site-shell.is-phone-device .meta-logo-link img {
-      max-width: none;
-    }
+    .site-shell.is-phone-device .meta-top { gap: 0.55rem; }
+    .site-shell.is-phone-device .meta-subtitle,
     .site-shell.is-phone-device .meta-project { font-size: 0.6rem; }
     .site-shell.is-phone-device .meta h1 { font-size: 0.92rem; }
     .site-shell.is-phone-device .meta-title-inline { font-size: 0.86em; }
@@ -1059,6 +1043,14 @@
     }
 
     .site-shell.is-phone-device .icon-number { font-size: 0.86rem; }
+    .site-shell.is-phone-device .end-image-section {
+      min-height: calc(30vh - 1rem);
+      padding-bottom: 0.9rem;
+    }
+    .site-shell.is-phone-device .end-logo-stack {
+      width: min(100%, 320px);
+    }
+    .site-shell.is-phone-device .page-end-spacer { height: 9vh; }
 
     html.phone-force-landscape .info-modal {
       padding: 1.25rem;
@@ -1128,26 +1120,7 @@ max-height: calc(var(--phone-landscape-height) - 2.5rem);
     <aside class="left-panel">
     <div class="meta">
       <div class="meta-top">
-        <div class="meta-branding" aria-label="Partner del progetto">
-          <a
-            class="meta-logo-link is-castello"
-            href="https://www.milanocastello.it/it/home"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Apri il sito del Castello Sforzesco"
-          >
-            <img src="https://www-cdn.comune.milano.it/image/layout_set_logo?img_id=500613581&t=1775820919856" alt="Logo Castello Sforzesco" loading="lazy" />
-          </a>
-          <a
-            class="meta-logo-link is-unimi"
-            href="https://sites.unimi.it/medioevoinstatale/"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Apri il sito Il Medioevo di UniMi"
-          >
-            <img src="https://sites.unimi.it/medioevoinstatale/testa1.jpg" alt="Logo Il Medioevo di UniMi" loading="lazy" />
-          </a>
-        </div>
+        <span class="meta-subtitle">CASTELLO SFORZESCO, MILANO</span>
         <a class="meta-project" id="projectLink" href="#">INFO</a>
       </div>
       <h1>La Sala di Griselda<span class="meta-title-inline-separator"> - </span><span class="meta-title-inline"><em>Decameron</em>, X 10</span></h1>
@@ -1363,6 +1336,38 @@ max-height: calc(var(--phone-landscape-height) - 2.5rem);
       <section class="text-section" id="text-23"><div class="image-label"><span class="icon-number">23</span></div><p>Il conte da Panago si tornò dopo alquanti dì a Bologna, e Gualtieri, tolto Giannucolo dal suo lavorìo, come suocero il pose in istato che egli onoratamente e con gran consolazione visse e finì la sua vecchiezza.</p></section>
       <section class="text-section" id="text-24"><div class="image-label"><span class="icon-number">24</span></div><p>Ed egli appresso, maritata altamente la sua figliuola, con Griselda, onorandola sempre quanto più si potea, lungamente e consolato visse.</p></section>
       <section class="text-section" id="text-moral"><p>Che si potrà dir qui, se non che anche nelle povere case piovono dal cielo de’ divini spiriti, come nelle reali di quegli che sarien più degni di guardar porci che d’avere sopra uomini signoria? Chi avrebbe altri che Griselda potuto col viso non solamente asciutto ma lieto sofferir le rigide e mai più non udite pruove da Gualtier fatte? Al quale non sarebbe forse stato male investito d’essersi abbattuto ad una che, quando fuor di casa l’avesse in camiscia cacciata, s’avesse sì ad uno altro fatto scuotere il pilliccione, che riuscito ne fosse una bella roba.</p></section>
+      <section class="end-image-section" aria-label="Immagini conclusive">
+        <div class="end-logo-stack">
+          <figure class="end-image-figure">
+            <a
+              class="end-image-link"
+              href="https://sites.unimi.it/medioevoinstatale/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Apri il sito Il Medioevo di UniMi"
+            >
+              <img id="medioevoLogo" src="https://sites.unimi.it/medioevoinstatale/testa1.jpg" alt="Dettaglio conclusivo" loading="lazy" />
+            </a>
+          </figure>
+          <a
+            class="end-castello-link"
+            href="https://www.milanocastello.it/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Apri il sito Castello Sforzesco"
+          >
+            <span class="end-castello-logo-wrap" id="castelloLogoWrap">
+              <img
+                id="castelloLogo"
+                src="https://www-cdn.comune.milano.it/image/layout_set_logo?img_id=500613581&t=1775822899450"
+                alt="Logo Castello Sforzesco"
+                loading="lazy"
+              />
+            </span>
+          </a>
+        </div>
+      </section>
+      <div class="page-end-spacer" aria-hidden="true"></div>
     </div>
   </main>
   </div>
@@ -1445,6 +1450,8 @@ max-height: calc(var(--phone-landscape-height) - 2.5rem);
     const infoModalContent = infoModal ? infoModal.querySelector('.info-modal-content') : null;
     const closeInfoModalBtn = document.getElementById('closeInfoModal');
     const startVisitBtn = document.getElementById('startVisitBtn');
+    const medioevoLogo = document.getElementById('medioevoLogo');
+    const castelloLogoWrap = document.getElementById('castelloLogoWrap');
     const originalSlides = Array.from(slidesTrack.querySelectorAll('.slide'));
     const totalSlides = originalSlides.length;
 
@@ -1658,7 +1665,7 @@ max-height: calc(var(--phone-landscape-height) - 2.5rem);
       const triggerLineY = getTriggerLineY();
       let activeSection = null;
 
-      for (const section of numberedSections) {
+      for (const section of allTextSections) {
         if (section.getBoundingClientRect().top <= triggerLineY + 1) {
           activeSection = section;
         } else {
@@ -1716,7 +1723,13 @@ max-height: calc(var(--phone-landscape-height) - 2.5rem);
 
       const activeSection = findActiveSectionByTrigger();
       if (activeSection) {
-        activateSection(activeSection.id);
+        const hasMappedImage = !!getOriginalImageByTarget(activeSection.id);
+        if (hasMappedImage) {
+          activateSection(activeSection.id);
+        } else if (currentActiveTargetId !== null) {
+          currentActiveTargetId = null;
+          clearActiveState();
+        }
       } else {
         if (currentActiveTargetId !== null) {
           currentActiveTargetId = null;
@@ -1743,6 +1756,17 @@ max-height: calc(var(--phone-landscape-height) - 2.5rem);
     function updateInlineIntroTitle() {
       const introIsVisible = isElementVisibleInRightColumn(introHeading);
       document.body.classList.toggle('show-inline-intro-title', !introIsVisible);
+    }
+
+    function syncEndLogos() {
+      if (!medioevoLogo || !castelloLogoWrap) return;
+
+      const logoWidth = medioevoLogo.offsetWidth;
+      const logoHeight = medioevoLogo.offsetHeight;
+      if (!logoWidth || !logoHeight) return;
+
+      castelloLogoWrap.style.width = `${logoWidth}px`;
+      castelloLogoWrap.style.height = `${logoHeight}px`;
     }
 
     function requestSync() {
@@ -1856,7 +1880,9 @@ max-height: calc(var(--phone-landscape-height) - 2.5rem);
     window.addEventListener('scroll', requestSync, { passive: true });
     window.addEventListener('load', requestSync);
     window.addEventListener('load', openInfoModal);
+    window.addEventListener('load', syncEndLogos);
     window.addEventListener('resize', requestSync);
+    window.addEventListener('resize', syncEndLogos);
     window.addEventListener('load', syncPhoneLandscapeMode);
     window.addEventListener('resize', syncPhoneLandscapeMode);
     window.addEventListener('orientationchange', syncPhoneLandscapeMode);
@@ -1870,7 +1896,12 @@ max-height: calc(var(--phone-landscape-height) - 2.5rem);
       stackedLayoutBreakpoint.addListener(requestSync);
     }
 
+    if (medioevoLogo && !medioevoLogo.complete) {
+      medioevoLogo.addEventListener('load', syncEndLogos);
+    }
+
     syncPhoneLandscapeMode();
+    syncEndLogos();
     requestSync();
 
     const swipeContainer = document.querySelector('.slideshow-shell');
